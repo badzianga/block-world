@@ -5,6 +5,7 @@
 #include "core/Application.hpp"
 #include "core/Config.hpp"
 #include "core/Input.hpp"
+#include "core/Timer.hpp"
 
 Application::Application() {
     if (!glfwInit()) {
@@ -31,8 +32,6 @@ Application::Application() {
     glfwSwapInterval(Config::Graphics::vsync);
     glfwSetWindowUserPointer(p_window, this);
 
-    p_input = std::make_unique<Input>(p_window);
-
     if (glewInit() != GLEW_OK) {
         std::cerr << "Failed to initialize GLEW\n";
         glfwDestroyWindow(p_window);
@@ -43,6 +42,9 @@ Application::Application() {
     std::cout << "OpenGL API " << reinterpret_cast<const char*>(glGetString(GL_VERSION)) << "\n"
               << "Using Device: " << reinterpret_cast<const char*>(glGetString(GL_VENDOR))
               << " - " << reinterpret_cast<const char*>(glGetString(GL_RENDERER)) << "\n";
+
+    p_input = std::make_unique<Input>(p_window);
+    p_timer = std::make_unique<Timer>();
 }
 
 Application::~Application() {
@@ -51,6 +53,8 @@ Application::~Application() {
 }
 
 void Application::run() {
+    p_timer->init();
+
     while (!glfwWindowShouldClose(p_window)) {
         glClear(GL_COLOR_BUFFER_BIT);
 
@@ -59,6 +63,9 @@ void Application::run() {
         }
 
         p_input->update();
+        p_timer->update();
+
+        std::cout << "FPS: " << p_timer->getFPS() << "\n";
 
         glfwSwapBuffers(p_window);
         glfwPollEvents();
