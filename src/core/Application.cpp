@@ -3,6 +3,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include "core/Application.hpp"
+#include "core/Config.hpp"
 #include "core/Input.hpp"
 
 Application::Application() {
@@ -15,7 +16,11 @@ Application::Application() {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    p_window = glfwCreateWindow(800, 600, "MineCppraft", nullptr, nullptr);
+    p_window = glfwCreateWindow(
+        Config::Window::width, Config::Window::height,
+        Config::Window::title,
+        nullptr, nullptr
+    );
     if (!p_window) {
         std::cerr << "Failed to open GLFW window\n";
         glfwTerminate();
@@ -23,6 +28,7 @@ Application::Application() {
     }
 
     glfwMakeContextCurrent(p_window);
+    glfwSwapInterval(Config::Graphics::vsync);
     glfwSetWindowUserPointer(p_window, this);
 
     p_input = std::make_unique<Input>(p_window);

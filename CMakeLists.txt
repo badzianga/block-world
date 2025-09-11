@@ -10,6 +10,7 @@ add_executable(MineCppraft main.cpp
         src/core/Application.cpp
         include/core/Application.hpp
         src/core/Input.cpp
-        include/core/Input.hpp)
+        include/core/Input.hpp
+        include/core/Config.hpp)
 target_include_directories(MineCppraft PRIVATE include)
 target_link_libraries(MineCppraft PRIVATE GL GLEW glfw)
