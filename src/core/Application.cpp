@@ -3,6 +3,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include "core/Application.hpp"
+#include "core/Input.hpp"
 
 Application::Application() {
     if (!glfwInit()) {
@@ -22,6 +23,9 @@ Application::Application() {
     }
 
     glfwMakeContextCurrent(p_window);
+    glfwSetWindowUserPointer(p_window, this);
+
+    p_input = std::make_unique<Input>(p_window);
 
     if (glewInit() != GLEW_OK) {
         std::cerr << "Failed to initialize GLEW\n";
@@ -43,6 +47,12 @@ Application::~Application() {
 void Application::run() {
     while (!glfwWindowShouldClose(p_window)) {
         glClear(GL_COLOR_BUFFER_BIT);
+
+        if (p_input->isKeyPressed(GLFW_KEY_ESCAPE)) {
+            glfwSetWindowShouldClose(p_window, GLFW_TRUE);
+        }
+
+        p_input->update();
 
         glfwSwapBuffers(p_window);
         glfwPollEvents();

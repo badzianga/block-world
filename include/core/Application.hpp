@@ -1,6 +1,9 @@
 #pragma once
+#include <memory>
 
 struct GLFWwindow;
+
+class Input;
 
 class Application {
 public:
@@ -10,4 +13,5 @@ public:
     void run();
 private:
     GLFWwindow* p_window = nullptr;
+    std::unique_ptr<Input> p_input;
 };
