@@ -11,6 +11,7 @@
 #include "rendering/Camera.hpp"
 #include "rendering/Mesh.hpp"
 #include "rendering/Shader.hpp"
+#include "rendering/Texture.hpp"
 #include "rendering/Vertex.hpp"
 
 Application::Application() {
@@ -64,39 +65,37 @@ Application::~Application() {
 void Application::run() {
     p_timer->init();
 
-    Shader shader{"../res/shaders/cube.vert", "../res/shaders/cube.frag"};
-
     std::vector<Vertex> vertices = {
         // front
-        {{-0.5f, -0.5f,  0.5f}, {0.f ,0.f, 1.f}},
-        {{ 0.5f, -0.5f,  0.5f}, {0.f ,0.f, 1.f}},
-        {{ 0.5f,  0.5f,  0.5f}, {0.f ,0.f, 1.f}},
-        {{-0.5f,  0.5f,  0.5f}, {0.f ,0.f, 1.f}},
+        {{-0.5f, -0.5f,  0.5f}, {0.f ,0.f, 1.f}, {0.f, 0.f}},
+        {{ 0.5f, -0.5f,  0.5f}, {0.f ,0.f, 1.f}, {1.f, 0.f}},
+        {{ 0.5f,  0.5f,  0.5f}, {0.f ,0.f, 1.f}, {1.f, 1.f}},
+        {{-0.5f,  0.5f,  0.5f}, {0.f ,0.f, 1.f}, {0.f, 1.f}},
         // back
-        {{-0.5f, -0.5f, -0.5f}, {0.f ,0.f, -1.f}},
-        {{-0.5f,  0.5f, -0.5f}, {0.f ,0.f, -1.f}},
-        {{ 0.5f,  0.5f, -0.5f}, {0.f ,0.f, -1.f}},
-        {{ 0.5f, -0.5f, -0.5f}, {0.f ,0.f, -1.f}},
+        {{-0.5f, -0.5f, -0.5f}, {0.f ,0.f, -1.f}, {1.f, 0.f}},
+        {{-0.5f,  0.5f, -0.5f}, {0.f ,0.f, -1.f}, {1.f, 1.f}},
+        {{ 0.5f,  0.5f, -0.5f}, {0.f ,0.f, -1.f}, {0.f, 1.f}},
+        {{ 0.5f, -0.5f, -0.5f}, {0.f ,0.f, -1.f}, {0.f, 0.f}},
         // left
-        {{-0.5f, -0.5f, -0.5f}, {-1.f, 0.f, 0.f}},
-        {{-0.5f, -0.5f,  0.5f}, {-1.f, 0.f, 0.f}},
-        {{-0.5f,  0.5f,  0.5f}, {-1.f, 0.f, 0.f}},
-        {{-0.5f,  0.5f, -0.5f}, {-1.f, 0.f, 0.f}},
+        {{-0.5f, -0.5f, -0.5f}, {-1.f, 0.f, 0.f}, {0.f, 0.f}},
+        {{-0.5f, -0.5f,  0.5f}, {-1.f, 0.f, 0.f}, {1.f, 0.f}},
+        {{-0.5f,  0.5f,  0.5f}, {-1.f, 0.f, 0.f}, {1.f, 1.f}},
+        {{-0.5f,  0.5f, -0.5f}, {-1.f, 0.f, 0.f}, {0.f, 1.f}},
         // right
-        {{ 0.5f, -0.5f, -0.5f}, {1.f, 0.f, 0.f}},
-        {{ 0.5f,  0.5f, -0.5f}, {1.f, 0.f, 0.f}},
-        {{ 0.5f,  0.5f,  0.5f}, {1.f, 0.f, 0.f}},
-        {{ 0.5f, -0.5f,  0.5f}, {1.f, 0.f, 0.f}},
+        {{ 0.5f, -0.5f, -0.5f}, {1.f, 0.f, 0.f}, {1.f, 0.f}},
+        {{ 0.5f,  0.5f, -0.5f}, {1.f, 0.f, 0.f}, {1.f, 1.f}},
+        {{ 0.5f,  0.5f,  0.5f}, {1.f, 0.f, 0.f}, {0.f, 1.f}},
+        {{ 0.5f, -0.5f,  0.5f}, {1.f, 0.f, 0.f}, {0.f, 0.f}},
         // top
-        {{-0.5f,  0.5f, -0.5f}, {0.f, 1.f, 0.f}},
-        {{-0.5f,  0.5f,  0.5f}, {0.f, 1.f, 0.f}},
-        {{ 0.5f,  0.5f,  0.5f}, {0.f, 1.f, 0.f}},
-        {{ 0.5f,  0.5f, -0.5f}, {0.f, 1.f, 0.f}},
+        {{-0.5f,  0.5f, -0.5f}, {0.f, 1.f, 0.f}, {0.f, 1.f}},
+        {{-0.5f,  0.5f,  0.5f}, {0.f, 1.f, 0.f}, {0.f, 0.f}},
+        {{ 0.5f,  0.5f,  0.5f}, {0.f, 1.f, 0.f}, {1.f, 0.f}},
+        {{ 0.5f,  0.5f, -0.5f}, {0.f, 1.f, 0.f}, {1.f, 1.f}},
         // bottom
-        {{-0.5f, -0.5f, -0.5f}, {0.f, -1.f, 0.f}},
-        {{ 0.5f, -0.5f, -0.5f}, {0.f, -1.f, 0.f}},
-        {{ 0.5f, -0.5f,  0.5f}, {0.f, -1.f, 0.f}},
-        {{-0.5f, -0.5f,  0.5f}, {0.f, -1.f, 0.f}},
+        {{-0.5f, -0.5f, -0.5f}, {0.f, -1.f, 0.f}, {1.f, 1.f}},
+        {{ 0.5f, -0.5f, -0.5f}, {0.f, -1.f, 0.f}, {0.f, 1.f}},
+        {{ 0.5f, -0.5f,  0.5f}, {0.f, -1.f, 0.f}, {0.f, 0.f}},
+        {{-0.5f, -0.5f,  0.5f}, {0.f, -1.f, 0.f}, {1.f, 0.f}},
     };
 
     std::vector<uint32_t> indices = {
@@ -109,8 +108,11 @@ void Application::run() {
     };
 
     Mesh cubeMesh(vertices, indices);
+    Shader shader{"../res/shaders/cube.vert", "../res/shaders/cube.frag"};
+    Texture texture{"../res/textures/dirt.png"};
 
     shader.use();
+    texture.use();
 
     glClearColor(0.1f, 0.15f, 0.2f, 1.f);
 
