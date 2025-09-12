@@ -7,7 +7,7 @@ out vec4 fragColor;
 void main() {
     const vec3 lightColor = vec3(1.f, 1.f, 1.f);
     const vec3 objectColor = vec3(0.8f, 0.6f, 0.2f);
-    const vec3 lightDir = -normalize(vec3(1.f, -1.f, 0.f));
+    const vec3 lightDir = -normalize(vec3(0.2f, -1.f, -0.5f));
 
     float diff = max(dot(normal, lightDir), 0.f);
 

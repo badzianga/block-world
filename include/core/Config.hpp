@@ -15,7 +15,7 @@ namespace Config {
     }  // Graphics
 
     namespace Gameplay {
-        constexpr float movementSpeed = 2.5f;
-        constexpr float mouseSensitivity = 0.1f;
+        constexpr float movementSpeed = 5.f;
+        constexpr float mouseSensitivity = 0.25f;
     }  // Gameplay
 }  // Config
