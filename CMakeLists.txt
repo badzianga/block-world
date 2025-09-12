@@ -14,5 +14,5 @@ file(GLOB_RECURSE SRC_FILES CONFIGURE_DEPENDS
 )
 
 add_executable(BlockWorld main.cpp ${SRC_FILES})
-target_include_directories(BlockWorld PRIVATE include)
+target_include_directories(BlockWorld PRIVATE include vendor)
 target_link_libraries(BlockWorld PRIVATE GL GLEW glfw glm)
