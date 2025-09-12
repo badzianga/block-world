@@ -8,6 +8,7 @@ Camera::Camera(const std::shared_ptr<Input>& input) : p_input(input) {}
 
 void Camera::update(float deltaTime) {
     processKeyboard(deltaTime);
+    processMouse();
     updateCameraVectors();
 }
 
@@ -39,6 +40,15 @@ void Camera::processKeyboard(float deltaTime) {
     if (p_input->isKeyDown(GLFW_KEY_D)) {
         m_position += m_right * velocity;
     }
+}
+
+void Camera::processMouse() {
+    glm::vec2 offset = p_input->getMouseDelta() * Config::Gameplay::mouseSensitivity;
+
+    m_yaw += offset.x;
+    m_pitch -= offset.y;
+
+    m_pitch = glm::clamp(m_pitch, -89.9f, 89.9f);
 }
 
 void Camera::updateCameraVectors() {

@@ -2,7 +2,7 @@
 #include "core/Input.hpp"
 #include <iostream>
 
-Input::Input(GLFWwindow* window) {
+Input::Input(GLFWwindow* window) : p_window(window) {
     glfwSetWindowUserPointer(window, this);
 
     glfwSetKeyCallback(window, [](GLFWwindow* window, int key, int, int action, int) {
@@ -28,11 +28,26 @@ Input::Input(GLFWwindow* window) {
             input->m_mouseDown[button] = false;
         }
     });
+
+    glfwSetCursorPosCallback(window, [](GLFWwindow* win, double xpos, double ypos) {
+        auto input = static_cast<Input*>(glfwGetWindowUserPointer(win));
+
+        input->m_mousePosition.x = static_cast<float>(xpos);
+        input->m_mousePosition.y = static_cast<float>(ypos);
+
+        if (input->m_firstMouseInput) {
+            input->m_prevMousePosition = input->m_mousePosition;
+            input->m_firstMouseInput = false;
+        }
+    });
 }
 
 void Input::update() {
     m_keysPressed.clear();
     m_mousePressed.clear();
+
+    m_mouseDelta = m_mousePosition - m_prevMousePosition;
+    m_prevMousePosition = m_mousePosition;
 }
 
 bool Input::isKeyDown(int key) const {
@@ -53,4 +68,12 @@ bool Input::isMouseDown(int button) const {
 bool Input::isMousePressed(int button) const {
     auto it = m_mousePressed.find(button);
     return it != m_mousePressed.end() && it->second;
+}
+
+glm::vec2 Input::getMousePosition() const {
+    return m_mousePosition;
+}
+
+glm::vec2 Input::getMouseDelta() const {
+    return m_mouseDelta;
 }

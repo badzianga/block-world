@@ -14,6 +14,7 @@ public:
     static glm::mat4 getProjectionMatrix();
 private:
     void processKeyboard(float deltaTime);
+    void processMouse();
     void updateCameraVectors();
 
     std::shared_ptr<Input> p_input;

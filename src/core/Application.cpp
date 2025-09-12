@@ -114,6 +114,8 @@ void Application::run() {
 
     glClearColor(0.1f, 0.15f, 0.2f, 1.f);
 
+    glfwSetInputMode(p_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
     while (!glfwWindowShouldClose(p_window)) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -126,8 +128,7 @@ void Application::run() {
         p_input->update();
 
         glm::mat4 model(1.f);
-        model = glm::translate(model, glm::vec3(0.f, -0.25f, -2.5f));
-        model = glm::rotate(model, glm::radians(45.f), glm::vec3(1.f, 0.f, 0.f));
+        model = glm::translate(model, glm::vec3(0.f, 0.f, -3.f));
 
         shader.set("u_model", model);
         shader.set("u_view", p_camera->getViewMatrix());
