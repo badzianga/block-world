@@ -13,6 +13,7 @@
 #include "rendering/Shader.hpp"
 #include "rendering/Texture.hpp"
 #include "rendering/Vertex.hpp"
+#include "world/Block.hpp"
 
 Application::Application() {
     if (!glfwInit()) {
@@ -65,38 +66,41 @@ Application::~Application() {
 void Application::run() {
     p_timer->init();
 
-    std::vector<Vertex> vertices = {
-        // front
-        {{-0.5f, -0.5f,  0.5f}, {0.f ,0.f, 1.f}, {0.f, 0.f}},
-        {{ 0.5f, -0.5f,  0.5f}, {0.f ,0.f, 1.f}, {1.f, 0.f}},
-        {{ 0.5f,  0.5f,  0.5f}, {0.f ,0.f, 1.f}, {1.f, 1.f}},
-        {{-0.5f,  0.5f,  0.5f}, {0.f ,0.f, 1.f}, {0.f, 1.f}},
-        // back
-        {{-0.5f, -0.5f, -0.5f}, {0.f ,0.f, -1.f}, {1.f, 0.f}},
-        {{-0.5f,  0.5f, -0.5f}, {0.f ,0.f, -1.f}, {1.f, 1.f}},
-        {{ 0.5f,  0.5f, -0.5f}, {0.f ,0.f, -1.f}, {0.f, 1.f}},
-        {{ 0.5f, -0.5f, -0.5f}, {0.f ,0.f, -1.f}, {0.f, 0.f}},
-        // left
-        {{-0.5f, -0.5f, -0.5f}, {-1.f, 0.f, 0.f}, {0.f, 0.f}},
-        {{-0.5f, -0.5f,  0.5f}, {-1.f, 0.f, 0.f}, {1.f, 0.f}},
-        {{-0.5f,  0.5f,  0.5f}, {-1.f, 0.f, 0.f}, {1.f, 1.f}},
-        {{-0.5f,  0.5f, -0.5f}, {-1.f, 0.f, 0.f}, {0.f, 1.f}},
-        // right
-        {{ 0.5f, -0.5f, -0.5f}, {1.f, 0.f, 0.f}, {1.f, 0.f}},
-        {{ 0.5f,  0.5f, -0.5f}, {1.f, 0.f, 0.f}, {1.f, 1.f}},
-        {{ 0.5f,  0.5f,  0.5f}, {1.f, 0.f, 0.f}, {0.f, 1.f}},
-        {{ 0.5f, -0.5f,  0.5f}, {1.f, 0.f, 0.f}, {0.f, 0.f}},
-        // top
-        {{-0.5f,  0.5f, -0.5f}, {0.f, 1.f, 0.f}, {0.f, 1.f}},
-        {{-0.5f,  0.5f,  0.5f}, {0.f, 1.f, 0.f}, {0.f, 0.f}},
-        {{ 0.5f,  0.5f,  0.5f}, {0.f, 1.f, 0.f}, {1.f, 0.f}},
-        {{ 0.5f,  0.5f, -0.5f}, {0.f, 1.f, 0.f}, {1.f, 1.f}},
-        // bottom
-        {{-0.5f, -0.5f, -0.5f}, {0.f, -1.f, 0.f}, {1.f, 1.f}},
-        {{ 0.5f, -0.5f, -0.5f}, {0.f, -1.f, 0.f}, {0.f, 1.f}},
-        {{ 0.5f, -0.5f,  0.5f}, {0.f, -1.f, 0.f}, {0.f, 0.f}},
-        {{-0.5f, -0.5f,  0.5f}, {0.f, -1.f, 0.f}, {1.f, 0.f}},
-    };
+    int type = 2;  // grass
+    constexpr float stride = 1.f / 16.f;
+    int i = 0;
+    // TEMP: generate vertices based on block type
+    std::vector<Vertex> vertices(24);
+    // front
+    vertices[i++] = {{-0.5f, -0.5f,  0.5f}, {0.f ,0.f, 1.f}, glm::vec2{(float)(blocks[type % 16].side), (float)(blocks[type / 16].side + 1)} * stride};
+    vertices[i++] = {{ 0.5f, -0.5f,  0.5f}, {0.f ,0.f, 1.f}, glm::vec2{(float)(blocks[type % 16].side + 1), (float)(blocks[type / 16].side + 1)} * stride};
+    vertices[i++] = {{ 0.5f,  0.5f,  0.5f}, {0.f ,0.f, 1.f}, glm::vec2{(float)(blocks[type % 16].side + 1), (float)(blocks[type / 16].side)} * stride};
+    vertices[i++] = {{-0.5f,  0.5f,  0.5f}, {0.f ,0.f, 1.f}, glm::vec2{(float)(blocks[type % 16].side), (float)(blocks[type / 16].side)} * stride};
+    // back
+    vertices[i++] = {{-0.5f, -0.5f, -0.5f}, {0.f ,0.f, -1.f}, glm::vec2{(float)(blocks[type % 16].side + 1), (float)(blocks[type / 16].side + 1)} * stride};
+    vertices[i++] = {{-0.5f,  0.5f, -0.5f}, {0.f ,0.f, -1.f}, glm::vec2{(float)(blocks[type % 16].side + 1), (float)(blocks[type / 16].side)} * stride};
+    vertices[i++] = {{ 0.5f,  0.5f, -0.5f}, {0.f ,0.f, -1.f}, glm::vec2{(float)(blocks[type % 16].side), (float)(blocks[type / 16].side)} * stride};
+    vertices[i++] = {{ 0.5f, -0.5f, -0.5f}, {0.f ,0.f, -1.f}, glm::vec2{(float)(blocks[type % 16].side), (float)(blocks[type / 16].side + 1)} * stride};
+    // left
+    vertices[i++] = {{-0.5f, -0.5f, -0.5f}, {-1.f, 0.f, 0.f}, glm::vec2{(float)(blocks[type % 16].side), (float)(blocks[type / 16].side + 1)} * stride};
+    vertices[i++] = {{-0.5f, -0.5f,  0.5f}, {-1.f, 0.f, 0.f}, glm::vec2{(float)(blocks[type % 16].side + 1), (float)(blocks[type / 16].side + 1)} * stride};
+    vertices[i++] = {{-0.5f,  0.5f,  0.5f}, {-1.f, 0.f, 0.f}, glm::vec2{(float)(blocks[type % 16].side + 1), (float)(blocks[type / 16].side)} * stride};
+    vertices[i++] = {{-0.5f,  0.5f, -0.5f}, {-1.f, 0.f, 0.f}, glm::vec2{(float)(blocks[type % 16].side), (float)(blocks[type / 16].side)} * stride};
+    // right
+    vertices[i++] = {{ 0.5f, -0.5f, -0.5f}, {1.f, 0.f, 0.f}, glm::vec2{(float)(blocks[type % 16].side + 1), (float)(blocks[type / 16].side + 1)} * stride};
+    vertices[i++] = {{ 0.5f,  0.5f, -0.5f}, {1.f, 0.f, 0.f}, glm::vec2{(float)(blocks[type % 16].side + 1), (float)(blocks[type / 16].side)} * stride};
+    vertices[i++] = {{ 0.5f,  0.5f,  0.5f}, {1.f, 0.f, 0.f}, glm::vec2{(float)(blocks[type % 16].side), (float)(blocks[type / 16].side)} * stride};
+    vertices[i++] = {{ 0.5f, -0.5f,  0.5f}, {1.f, 0.f, 0.f}, glm::vec2{(float)(blocks[type % 16].side), (float)(blocks[type / 16].side + 1)} * stride};
+    // top
+    vertices[i++] = {{-0.5f,  0.5f, -0.5f}, {0.f, 1.f, 0.f}, glm::vec2{(float)(blocks[type % 16].top), (float)(blocks[type / 16].top)} * stride};
+    vertices[i++] = {{-0.5f,  0.5f,  0.5f}, {0.f, 1.f, 0.f}, glm::vec2{(float)(blocks[type % 16].top), (float)(blocks[type / 16].top + 1)} * stride};
+    vertices[i++] = {{ 0.5f,  0.5f,  0.5f}, {0.f, 1.f, 0.f}, glm::vec2{(float)(blocks[type % 16].top + 1), (float)(blocks[type / 16].top + 1)} * stride};
+    vertices[i++] = {{ 0.5f,  0.5f, -0.5f}, {0.f, 1.f, 0.f}, glm::vec2{(float)(blocks[type % 16].top + 1), (float)(blocks[type / 16].top)} * stride};
+    // bottom
+    vertices[i++] = {{-0.5f, -0.5f, -0.5f}, {0.f, -1.f, 0.f}, glm::vec2{(float)(blocks[type % 16].bottom), (float)(blocks[type / 16].bottom + 1)} * stride};
+    vertices[i++] = {{ 0.5f, -0.5f, -0.5f}, {0.f, -1.f, 0.f}, glm::vec2{(float)(blocks[type % 16].bottom + 1), (float)(blocks[type / 16].bottom + 1)} * stride};
+    vertices[i++] = {{ 0.5f, -0.5f,  0.5f}, {0.f, -1.f, 0.f}, glm::vec2{(float)(blocks[type % 16].bottom + 1), (float)(blocks[type / 16].bottom)} * stride};
+    vertices[i++] = {{-0.5f, -0.5f,  0.5f}, {0.f, -1.f, 0.f}, glm::vec2{(float)(blocks[type % 16].bottom), (float)(blocks[type / 16].bottom)} * stride};
 
     std::vector<uint32_t> indices = {
          0,  1,  2,  2,  3,  0,        // front
@@ -109,7 +113,7 @@ void Application::run() {
 
     Mesh cubeMesh(vertices, indices);
     Shader shader{"../res/shaders/cube.vert", "../res/shaders/cube.frag"};
-    Texture texture{"../res/textures/dirt.png"};
+    Texture texture{"../res/textures/terrain.png"};
 
     shader.use();
     texture.use();
