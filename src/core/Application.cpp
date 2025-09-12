@@ -8,6 +8,7 @@
 #include "core/Config.hpp"
 #include "core/Input.hpp"
 #include "core/Timer.hpp"
+#include "rendering/Camera.hpp"
 #include "rendering/Mesh.hpp"
 #include "rendering/Shader.hpp"
 #include "rendering/Vertex.hpp"
@@ -50,8 +51,9 @@ Application::Application() {
               << "Using Device: " << reinterpret_cast<const char*>(glGetString(GL_VENDOR))
               << " - " << reinterpret_cast<const char*>(glGetString(GL_RENDERER)) << "\n";
 
-    p_input = std::make_unique<Input>(p_window);
+    p_input = std::make_shared<Input>(p_window);
     p_timer = std::make_unique<Timer>();
+    p_camera = std::make_unique<Camera>(p_input);
 }
 
 Application::~Application() {
@@ -110,13 +112,6 @@ void Application::run() {
 
     shader.use();
 
-    glm::mat4 proj = glm::perspective(
-        glm::radians(Config::Graphics::fov),
-        static_cast<float>(Config::Window::width)/static_cast<float>(Config::Window::height),
-        Config::Graphics::nearPlane,
-        Config::Graphics::farPlane
-    );
-
     glClearColor(0.1f, 0.15f, 0.2f, 1.f);
 
     while (!glfwWindowShouldClose(p_window)) {
@@ -126,16 +121,15 @@ void Application::run() {
             glfwSetWindowShouldClose(p_window, GLFW_TRUE);
         }
 
-        p_input->update();
         p_timer->update();
+        p_camera->update(p_timer->getDeltaTime());
+        p_input->update();
 
-        glm::vec3 camPos{2.f, 1.5f, 2.f};
-        glm::mat4 view = glm::lookAt(camPos, {0.f ,0.f ,0.f}, {0.f, 1.f ,0.f});
         glm::mat4 model(1.f);
 
         shader.set("u_model", model);
-        shader.set("u_view", view);
-        shader.set("u_projection", proj);
+        shader.set("u_view", p_camera->getViewMatrix());
+        shader.set("u_projection", Camera::getProjectionMatrix());
 
         cubeMesh.draw();
 

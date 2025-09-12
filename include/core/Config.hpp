@@ -13,4 +13,9 @@ namespace Config {
         constexpr float nearPlane = 0.1f;
         constexpr float farPlane = 100.f;
     }  // Graphics
+
+    namespace Gameplay {
+        constexpr float movementSpeed = 2.5f;
+        constexpr float mouseSensitivity = 0.1f;
+    }  // Gameplay
 }  // Config
