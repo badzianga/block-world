@@ -34,7 +34,7 @@ void Chunk::generate() {
 void Chunk::makeBlockMesh(uint8_t type, float x, float y, float z, std::vector<Vertex>& vertices, std::vector<uint32_t>& indices) {
     // yup, this code is ugly, but will be completely refactored in the future
 
-    constexpr float stride = 1.f / static_cast<float>(Config::Rendering::chunkSize);
+    constexpr float stride = 1.f / static_cast<float>(Config::Textures::inRow);
     // front
     vertices.push_back({{-0.5f + x, -0.5f + y,  0.5f + z}, Normal::front, glm::vec2{(float)(blocks[type % 16].side), (float)(blocks[type / 16].side + 1)} * stride});
     vertices.push_back({{ 0.5f + x, -0.5f + y,  0.5f + z}, Normal::front, glm::vec2{(float)(blocks[type % 16].side + 1), (float)(blocks[type / 16].side + 1)} * stride});
