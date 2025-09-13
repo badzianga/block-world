@@ -18,4 +18,10 @@ namespace Config {
         constexpr float movementSpeed = 5.f;
         constexpr float mouseSensitivity = 0.25f;
     }  // Gameplay
+
+    namespace Rendering {
+        constexpr int chunkSize = 16;
+        constexpr int chunkArea = chunkSize * chunkSize;
+        constexpr int chunkVolume = chunkArea * chunkSize;
+    }  // Rendering
 }  // Config

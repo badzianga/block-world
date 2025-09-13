@@ -9,11 +9,9 @@
 #include "core/Input.hpp"
 #include "core/Timer.hpp"
 #include "rendering/Camera.hpp"
-#include "rendering/Mesh.hpp"
 #include "rendering/Shader.hpp"
 #include "rendering/Texture.hpp"
-#include "rendering/Vertex.hpp"
-#include "world/Block.hpp"
+#include "world/Chunk.hpp"
 
 Application::Application() {
     if (!glfwInit()) {
@@ -66,52 +64,7 @@ Application::~Application() {
 void Application::run() {
     p_timer->init();
 
-    int type = 2;  // grass
-    constexpr float stride = 1.f / 16.f;
-    int i = 0;
-    // TEMP: generate vertices based on block type
-    std::vector<Vertex> vertices(24);
-    // front
-    vertices[i++] = {{-0.5f, -0.5f,  0.5f}, {0.f ,0.f, 1.f}, glm::vec2{(float)(blocks[type % 16].side), (float)(blocks[type / 16].side + 1)} * stride};
-    vertices[i++] = {{ 0.5f, -0.5f,  0.5f}, {0.f ,0.f, 1.f}, glm::vec2{(float)(blocks[type % 16].side + 1), (float)(blocks[type / 16].side + 1)} * stride};
-    vertices[i++] = {{ 0.5f,  0.5f,  0.5f}, {0.f ,0.f, 1.f}, glm::vec2{(float)(blocks[type % 16].side + 1), (float)(blocks[type / 16].side)} * stride};
-    vertices[i++] = {{-0.5f,  0.5f,  0.5f}, {0.f ,0.f, 1.f}, glm::vec2{(float)(blocks[type % 16].side), (float)(blocks[type / 16].side)} * stride};
-    // back
-    vertices[i++] = {{-0.5f, -0.5f, -0.5f}, {0.f ,0.f, -1.f}, glm::vec2{(float)(blocks[type % 16].side + 1), (float)(blocks[type / 16].side + 1)} * stride};
-    vertices[i++] = {{-0.5f,  0.5f, -0.5f}, {0.f ,0.f, -1.f}, glm::vec2{(float)(blocks[type % 16].side + 1), (float)(blocks[type / 16].side)} * stride};
-    vertices[i++] = {{ 0.5f,  0.5f, -0.5f}, {0.f ,0.f, -1.f}, glm::vec2{(float)(blocks[type % 16].side), (float)(blocks[type / 16].side)} * stride};
-    vertices[i++] = {{ 0.5f, -0.5f, -0.5f}, {0.f ,0.f, -1.f}, glm::vec2{(float)(blocks[type % 16].side), (float)(blocks[type / 16].side + 1)} * stride};
-    // left
-    vertices[i++] = {{-0.5f, -0.5f, -0.5f}, {-1.f, 0.f, 0.f}, glm::vec2{(float)(blocks[type % 16].side), (float)(blocks[type / 16].side + 1)} * stride};
-    vertices[i++] = {{-0.5f, -0.5f,  0.5f}, {-1.f, 0.f, 0.f}, glm::vec2{(float)(blocks[type % 16].side + 1), (float)(blocks[type / 16].side + 1)} * stride};
-    vertices[i++] = {{-0.5f,  0.5f,  0.5f}, {-1.f, 0.f, 0.f}, glm::vec2{(float)(blocks[type % 16].side + 1), (float)(blocks[type / 16].side)} * stride};
-    vertices[i++] = {{-0.5f,  0.5f, -0.5f}, {-1.f, 0.f, 0.f}, glm::vec2{(float)(blocks[type % 16].side), (float)(blocks[type / 16].side)} * stride};
-    // right
-    vertices[i++] = {{ 0.5f, -0.5f, -0.5f}, {1.f, 0.f, 0.f}, glm::vec2{(float)(blocks[type % 16].side + 1), (float)(blocks[type / 16].side + 1)} * stride};
-    vertices[i++] = {{ 0.5f,  0.5f, -0.5f}, {1.f, 0.f, 0.f}, glm::vec2{(float)(blocks[type % 16].side + 1), (float)(blocks[type / 16].side)} * stride};
-    vertices[i++] = {{ 0.5f,  0.5f,  0.5f}, {1.f, 0.f, 0.f}, glm::vec2{(float)(blocks[type % 16].side), (float)(blocks[type / 16].side)} * stride};
-    vertices[i++] = {{ 0.5f, -0.5f,  0.5f}, {1.f, 0.f, 0.f}, glm::vec2{(float)(blocks[type % 16].side), (float)(blocks[type / 16].side + 1)} * stride};
-    // top
-    vertices[i++] = {{-0.5f,  0.5f, -0.5f}, {0.f, 1.f, 0.f}, glm::vec2{(float)(blocks[type % 16].top), (float)(blocks[type / 16].top)} * stride};
-    vertices[i++] = {{-0.5f,  0.5f,  0.5f}, {0.f, 1.f, 0.f}, glm::vec2{(float)(blocks[type % 16].top), (float)(blocks[type / 16].top + 1)} * stride};
-    vertices[i++] = {{ 0.5f,  0.5f,  0.5f}, {0.f, 1.f, 0.f}, glm::vec2{(float)(blocks[type % 16].top + 1), (float)(blocks[type / 16].top + 1)} * stride};
-    vertices[i++] = {{ 0.5f,  0.5f, -0.5f}, {0.f, 1.f, 0.f}, glm::vec2{(float)(blocks[type % 16].top + 1), (float)(blocks[type / 16].top)} * stride};
-    // bottom
-    vertices[i++] = {{-0.5f, -0.5f, -0.5f}, {0.f, -1.f, 0.f}, glm::vec2{(float)(blocks[type % 16].bottom), (float)(blocks[type / 16].bottom + 1)} * stride};
-    vertices[i++] = {{ 0.5f, -0.5f, -0.5f}, {0.f, -1.f, 0.f}, glm::vec2{(float)(blocks[type % 16].bottom + 1), (float)(blocks[type / 16].bottom + 1)} * stride};
-    vertices[i++] = {{ 0.5f, -0.5f,  0.5f}, {0.f, -1.f, 0.f}, glm::vec2{(float)(blocks[type % 16].bottom + 1), (float)(blocks[type / 16].bottom)} * stride};
-    vertices[i++] = {{-0.5f, -0.5f,  0.5f}, {0.f, -1.f, 0.f}, glm::vec2{(float)(blocks[type % 16].bottom), (float)(blocks[type / 16].bottom)} * stride};
-
-    std::vector<uint32_t> indices = {
-         0,  1,  2,  2,  3,  0,        // front
-         4,  5,  6,  6,  7,  4,        // back
-         8,  9, 10, 10, 11,  8,        // left
-        12, 13, 14, 14, 15, 12,        // right
-        16, 17, 18, 18, 19, 16,        // top
-        20, 21, 22, 22, 23, 20,        // bottom
-    };
-
-    Mesh cubeMesh(vertices, indices);
+    Chunk chunk;
     Shader shader{"../res/shaders/cube.vert", "../res/shaders/cube.frag"};
     Texture texture{"../res/textures/terrain.png"};
 
@@ -140,7 +93,7 @@ void Application::run() {
         shader.set("u_view", p_camera->getViewMatrix());
         shader.set("u_projection", Camera::getProjectionMatrix());
 
-        cubeMesh.draw();
+        chunk.draw();
 
         glfwSwapBuffers(p_window);
         glfwPollEvents();
