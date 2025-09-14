@@ -1,9 +1,11 @@
 #include <iostream>
 #include <cstdlib>
-#include <vector>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <glm/gtc/matrix_transform.hpp>
+#include <imgui.h>
+#include <imgui_impl_glfw.h>
+#include <imgui_impl_opengl3.h>
 #include "core/Application.hpp"
 #include "core/Config.hpp"
 #include "core/Input.hpp"
@@ -54,6 +56,16 @@ Application::Application() {
     p_input = std::make_shared<Input>(p_window);
     p_timer = std::make_unique<Timer>();
     p_camera = std::make_unique<Camera>(p_input);
+
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+
+    ImGui::StyleColorsDark();
+
+    ImGui_ImplGlfw_InitForOpenGL(p_window, true);
+    ImGui_ImplOpenGL3_Init("#version 460 core");
 }
 
 Application::~Application() {
@@ -78,6 +90,15 @@ void Application::run() {
     while (!glfwWindowShouldClose(p_window)) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+
+        ImGui::Begin("Debug");
+        const ImGuiIO& io = ImGui::GetIO();
+        ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
+        ImGui::End();
+
         if (p_input->isKeyPressed(GLFW_KEY_ESCAPE)) {
             glfwSetWindowShouldClose(p_window, GLFW_TRUE);
         }
@@ -95,7 +116,14 @@ void Application::run() {
 
         chunk.draw();
 
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
         glfwSwapBuffers(p_window);
         glfwPollEvents();
     }
+
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
 }
