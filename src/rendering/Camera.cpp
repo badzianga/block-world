@@ -1,5 +1,6 @@
 #include <GLFW/glfw3.h>
 #include <glm/gtc/matrix_transform.hpp>
+#include <imgui.h>
 #include "core/Config.hpp"
 #include "core/Input.hpp"
 #include "rendering/Camera.hpp"
@@ -10,6 +11,14 @@ void Camera::update(float deltaTime) {
     processKeyboard(deltaTime);
     processMouse();
     updateCameraVectors();
+
+    ImGui::Text("XYZ: %f / %f / %f", m_position.x, m_position.y, m_position.z);
+    ImGui::Text("Block: %d / %d / %d",
+                static_cast<int>(m_position.x),
+                static_cast<int>(m_position.y),
+                static_cast<int>(m_position.z)
+    );
+    ImGui::Text("Facing: %f / %f / %f", m_front.x, m_front.y, m_front.z);
 }
 
 glm::mat4 Camera::getViewMatrix() const {
