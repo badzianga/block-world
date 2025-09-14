@@ -1,4 +1,5 @@
 #include <GL/glew.h>
+#include <imgui.h>
 #include "rendering/Mesh.hpp"
 
 Mesh::Mesh(const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices) {
@@ -63,4 +64,8 @@ void Mesh::draw() const {
     glBindVertexArray(m_vao);
     glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(m_indexCount), GL_UNSIGNED_INT, nullptr);
     glBindVertexArray(0);
+
+    ImGui::Separator();
+    ImGui::Text("Indices: %zu", m_indexCount);
+    ImGui::Text("Triangles: %zu", m_indexCount / 3);
 }
