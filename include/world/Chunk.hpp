@@ -15,7 +15,7 @@ public:
 
     void draw() const;
 private:
-    static void makeBlockMesh(Block block, float x, float y, float z, std::vector<Vertex>& vertices, std::vector<uint32_t>& indices);
+    [[nodiscard]] bool isAir(const glm::ivec3& localPos) const;
     void buildMesh();
 
     std::array<uint8_t, Config::Rendering::chunkVolume> m_blocks{};
