@@ -47,6 +47,9 @@ Application::Application() {
     }
 
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
+    glFrontFace(GL_CCW);
+    glCullFace(GL_BACK);
 
     std::cout << "OpenGL API " << reinterpret_cast<const char*>(glGetString(GL_VERSION)) << "\n"
               << "Using Device: " << reinterpret_cast<const char*>(glGetString(GL_VENDOR))
