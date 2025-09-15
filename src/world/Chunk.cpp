@@ -76,14 +76,6 @@ void Chunk::buildMesh() {
                     Vertex v4{{ 0.5f + fX, -0.5f + fY,  0.5f + fZ}, Normal::Right, glm::vec2{uSide, vSide + 1} * stride};
                     addFace(v1, v2, v3, v4);
                 }
-                // top face
-                if (isAir({x, y + 1, z})) {
-                    Vertex v1{{ 0.5f + fX,  0.5f + fY,  0.5f + fZ}, Normal::Top, glm::vec2{uTop + 1, vTop + 1} * stride};
-                    Vertex v2{{ 0.5f + fX,  0.5f + fY, -0.5f + fZ}, Normal::Top, glm::vec2{uTop + 1, vTop} * stride};
-                    Vertex v3{{-0.5f + fX,  0.5f + fY, -0.5f + fZ}, Normal::Top, glm::vec2{uTop, vTop} * stride};
-                    Vertex v4{{-0.5f + fX,  0.5f + fY,  0.5f + fZ}, Normal::Top, glm::vec2{uTop, vTop + 1} * stride};
-                    addFace(v1, v2, v3, v4);
-                }
                 // bottom face
                 if (isAir({x, y - 1, z})) {
                     Vertex v1{{-0.5f + fX, -0.5f + fY, -0.5f + fZ}, Normal::Bottom, glm::vec2{uBottom, vBottom + 1} * stride};
@@ -91,7 +83,14 @@ void Chunk::buildMesh() {
                     Vertex v3{{ 0.5f + fX, -0.5f + fY,  0.5f + fZ}, Normal::Bottom, glm::vec2{uBottom + 1, vBottom} * stride};
                     Vertex v4{{-0.5f + fX, -0.5f + fY,  0.5f + fZ}, Normal::Bottom, glm::vec2{uBottom, vBottom} * stride};
                     addFace(v1, v2, v3, v4);
-
+                }
+                // top face
+                if (isAir({x, y + 1, z})) {
+                    Vertex v1{{ 0.5f + fX,  0.5f + fY,  0.5f + fZ}, Normal::Top, glm::vec2{uTop + 1, vTop + 1} * stride};
+                    Vertex v2{{ 0.5f + fX,  0.5f + fY, -0.5f + fZ}, Normal::Top, glm::vec2{uTop + 1, vTop} * stride};
+                    Vertex v3{{-0.5f + fX,  0.5f + fY, -0.5f + fZ}, Normal::Top, glm::vec2{uTop, vTop} * stride};
+                    Vertex v4{{-0.5f + fX,  0.5f + fY,  0.5f + fZ}, Normal::Top, glm::vec2{uTop, vTop + 1} * stride};
+                    addFace(v1, v2, v3, v4);
                 }
                 // front face
                 if (isAir({x, y, z + 1})) {

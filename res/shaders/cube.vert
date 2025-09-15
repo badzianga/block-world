@@ -13,8 +13,8 @@ out vec2 uv;
 const vec3 normals[6] = vec3[6](
     vec3(-1.0,  0.0,  0.0),  // left
     vec3( 1.0,  0.0,  0.0),  // right
-    vec3( 0.0,  1.0,  0.0),  // top
     vec3( 0.0, -1.0,  0.0),  // bottom
+    vec3( 0.0,  1.0,  0.0),  // top
     vec3( 0.0,  0.0,  1.0),  // front
     vec3( 0.0,  0.0, -1.0)   // back
 );
