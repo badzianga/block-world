@@ -29,6 +29,13 @@ void Chunk::buildMesh() {
     std::vector<Vertex> vertices;
     std::vector<uint32_t> indices;
 
+    auto addFace = [&](const Vertex& v1, const Vertex& v2, const Vertex& v3, const Vertex& v4) -> void {
+        // interesting thing is, using reserve before insert here makes mesh building 10x slower (~0.0006s -> ~0.006s)
+        vertices.insert(vertices.end(), {v1, v2, v3, v4});
+        indices.insert(indices.end(), {vertices.size() - 4, vertices.size() - 3, vertices.size() - 2,
+                                                  vertices.size() - 2, vertices.size() - 1, vertices.size() - 4});
+    };
+
     for (int z = 0; z < Config::Rendering::chunkSize; ++z) {
         for (int y = 0; y < Config::Rendering::chunkSize; ++y) {
             for (int x = 0; x < Config::Rendering::chunkSize; ++x) {
@@ -52,81 +59,52 @@ void Chunk::buildMesh() {
 
                 // left face
                 if (isAir({x - 1, y, z})) {
-                    vertices.push_back({{-0.5f + fX, -0.5f + fY, -0.5f + fZ}, Normal::Left, glm::vec2{uSide, vSide + 1} * stride});
-                    vertices.push_back({{-0.5f + fX, -0.5f + fY,  0.5f + fZ}, Normal::Left, glm::vec2{uSide + 1, vSide + 1} * stride});
-                    vertices.push_back({{-0.5f + fX,  0.5f + fY,  0.5f + fZ}, Normal::Left, glm::vec2{uSide + 1, vSide} * stride});
-                    vertices.push_back({{-0.5f + fX,  0.5f + fY, -0.5f + fZ}, Normal::Left, glm::vec2{uSide, vSide} * stride});
-                    indices.push_back(vertices.size() - 4);
-                    indices.push_back(vertices.size() - 3);
-                    indices.push_back(vertices.size() - 2);
-                    indices.push_back(vertices.size() - 2);
-                    indices.push_back(vertices.size() - 1);
-                    indices.push_back(vertices.size() - 4);
+                    Vertex v1{{-0.5f + fX, -0.5f + fY, -0.5f + fZ}, Normal::Left, glm::vec2{uSide, vSide + 1} * stride};
+                    Vertex v2{{-0.5f + fX, -0.5f + fY,  0.5f + fZ}, Normal::Left, glm::vec2{uSide + 1, vSide + 1} * stride};
+                    Vertex v3{{-0.5f + fX,  0.5f + fY,  0.5f + fZ}, Normal::Left, glm::vec2{uSide + 1, vSide} * stride};
+                    Vertex v4{{-0.5f + fX,  0.5f + fY, -0.5f + fZ}, Normal::Left, glm::vec2{uSide, vSide} * stride};
+                    addFace(v1, v2, v3, v4);
                 }
                 // right face
                 if (isAir({x + 1, y, z})) {
-                    vertices.push_back({{ 0.5f + fX, -0.5f + fY, -0.5f + fZ}, Normal::Right, glm::vec2{uSide + 1, vSide + 1} * stride});
-                    vertices.push_back({{ 0.5f + fX,  0.5f + fY, -0.5f + fZ}, Normal::Right, glm::vec2{uSide + 1, vSide} * stride});
-                    vertices.push_back({{ 0.5f + fX,  0.5f + fY,  0.5f + fZ}, Normal::Right, glm::vec2{uSide, vSide} * stride});
-                    vertices.push_back({{ 0.5f + fX, -0.5f + fY,  0.5f + fZ}, Normal::Right, glm::vec2{uSide, vSide + 1} * stride});
-                    indices.push_back(vertices.size() - 4);
-                    indices.push_back(vertices.size() - 3);
-                    indices.push_back(vertices.size() - 2);
-                    indices.push_back(vertices.size() - 2);
-                    indices.push_back(vertices.size() - 1);
-                    indices.push_back(vertices.size() - 4);
+                    Vertex v1{{ 0.5f + fX, -0.5f + fY, -0.5f + fZ}, Normal::Right, glm::vec2{uSide + 1, vSide + 1} * stride};
+                    Vertex v2{{ 0.5f + fX,  0.5f + fY, -0.5f + fZ}, Normal::Right, glm::vec2{uSide + 1, vSide} * stride};
+                    Vertex v3{{ 0.5f + fX,  0.5f + fY,  0.5f + fZ}, Normal::Right, glm::vec2{uSide, vSide} * stride};
+                    Vertex v4{{ 0.5f + fX, -0.5f + fY,  0.5f + fZ}, Normal::Right, glm::vec2{uSide, vSide + 1} * stride};
+                    addFace(v1, v2, v3, v4);
                 }
                 // top face
                 if (isAir({x, y + 1, z})) {
-                    vertices.push_back({{-0.5f + fX,  0.5f + fY, -0.5f + fZ}, Normal::Top, glm::vec2{uTop, vTop} * stride});
-                    vertices.push_back({{-0.5f + fX,  0.5f + fY,  0.5f + fZ}, Normal::Top, glm::vec2{uTop, vTop + 1} * stride});
-                    vertices.push_back({{ 0.5f + fX,  0.5f + fY,  0.5f + fZ}, Normal::Top, glm::vec2{uTop + 1, vTop + 1} * stride});
-                    vertices.push_back({{ 0.5f + fX,  0.5f + fY, -0.5f + fZ}, Normal::Top, glm::vec2{uTop + 1, vTop} * stride});
-                    indices.push_back(vertices.size() - 4);
-                    indices.push_back(vertices.size() - 3);
-                    indices.push_back(vertices.size() - 2);
-                    indices.push_back(vertices.size() - 2);
-                    indices.push_back(vertices.size() - 1);
-                    indices.push_back(vertices.size() - 4);
+                    Vertex v1{{-0.5f + fX,  0.5f + fY, -0.5f + fZ}, Normal::Top, glm::vec2{uTop, vTop} * stride};
+                    Vertex v2{{-0.5f + fX,  0.5f + fY,  0.5f + fZ}, Normal::Top, glm::vec2{uTop, vTop + 1} * stride};
+                    Vertex v3{{ 0.5f + fX,  0.5f + fY,  0.5f + fZ}, Normal::Top, glm::vec2{uTop + 1, vTop + 1} * stride};
+                    Vertex v4{{ 0.5f + fX,  0.5f + fY, -0.5f + fZ}, Normal::Top, glm::vec2{uTop + 1, vTop} * stride};
+                    addFace(v1, v2, v3, v4);
                 }
                 // bottom face
                 if (isAir({x, y - 1, z})) {
-                    vertices.push_back({{-0.5f + fX, -0.5f + fY, -0.5f + fZ}, Normal::Bottom, glm::vec2{uBottom, vBottom + 1} * stride});
-                    vertices.push_back({{ 0.5f + fX, -0.5f + fY, -0.5f + fZ}, Normal::Bottom, glm::vec2{uBottom + 1, vBottom + 1} * stride});
-                    vertices.push_back({{ 0.5f + fX, -0.5f + fY,  0.5f + fZ}, Normal::Bottom, glm::vec2{uBottom + 1, vBottom} * stride});
-                    vertices.push_back({{-0.5f + fX, -0.5f + fY,  0.5f + fZ}, Normal::Bottom, glm::vec2{uBottom, vBottom} * stride});
-                    indices.push_back(vertices.size() - 4);
-                    indices.push_back(vertices.size() - 3);
-                    indices.push_back(vertices.size() - 2);
-                    indices.push_back(vertices.size() - 2);
-                    indices.push_back(vertices.size() - 1);
-                    indices.push_back(vertices.size() - 4);
+                    Vertex v1{{-0.5f + fX, -0.5f + fY, -0.5f + fZ}, Normal::Bottom, glm::vec2{uBottom, vBottom + 1} * stride};
+                    Vertex v2{{ 0.5f + fX, -0.5f + fY, -0.5f + fZ}, Normal::Bottom, glm::vec2{uBottom + 1, vBottom + 1} * stride};
+                    Vertex v3{{ 0.5f + fX, -0.5f + fY,  0.5f + fZ}, Normal::Bottom, glm::vec2{uBottom + 1, vBottom} * stride};
+                    Vertex v4{{-0.5f + fX, -0.5f + fY,  0.5f + fZ}, Normal::Bottom, glm::vec2{uBottom, vBottom} * stride};
+                    addFace(v1, v2, v3, v4);
+
                 }
                 // front face
                 if (isAir({x, y, z + 1})) {
-                    vertices.push_back({{-0.5f + fX, -0.5f + fY,  0.5f + fZ}, Normal::Front, glm::vec2{uSide, vSide + 1} * stride});
-                    vertices.push_back({{ 0.5f + fX, -0.5f + fY,  0.5f + fZ}, Normal::Front, glm::vec2{uSide + 1, vSide + 1} * stride});
-                    vertices.push_back({{ 0.5f + fX,  0.5f + fY,  0.5f + fZ}, Normal::Front, glm::vec2{uSide + 1, vSide} * stride});
-                    vertices.push_back({{-0.5f + fX,  0.5f + fY,  0.5f + fZ}, Normal::Front, glm::vec2{uSide, vSide} * stride});
-                    indices.push_back(vertices.size() - 4);
-                    indices.push_back(vertices.size() - 3);
-                    indices.push_back(vertices.size() - 2);
-                    indices.push_back(vertices.size() - 2);
-                    indices.push_back(vertices.size() - 1);
-                    indices.push_back(vertices.size() - 4);
+                    Vertex v1{{-0.5f + fX, -0.5f + fY,  0.5f + fZ}, Normal::Front, glm::vec2{uSide, vSide + 1} * stride};
+                    Vertex v2{{ 0.5f + fX, -0.5f + fY,  0.5f + fZ}, Normal::Front, glm::vec2{uSide + 1, vSide + 1} * stride};
+                    Vertex v3{{ 0.5f + fX,  0.5f + fY,  0.5f + fZ}, Normal::Front, glm::vec2{uSide + 1, vSide} * stride};
+                    Vertex v4{{-0.5f + fX,  0.5f + fY,  0.5f + fZ}, Normal::Front, glm::vec2{uSide, vSide} * stride};
+                    addFace(v1, v2, v3, v4);
                 }
                 // back face
                 if (isAir({x, y, z - 1})) {
-                    vertices.push_back({{-0.5f + fX, -0.5f + fY, -0.5f + fZ}, Normal::Back, glm::vec2{uSide + 1, vSide + 1} * stride});
-                    vertices.push_back({{-0.5f + fX,  0.5f + fY, -0.5f + fZ}, Normal::Back, glm::vec2{uSide + 1, vSide} * stride});
-                    vertices.push_back({{ 0.5f + fX,  0.5f + fY, -0.5f + fZ}, Normal::Back, glm::vec2{uSide, vSide} * stride});
-                    vertices.push_back({{ 0.5f + fX, -0.5f + fY, -0.5f + fZ}, Normal::Back, glm::vec2{uSide, vSide + 1} * stride});
-                    indices.push_back(vertices.size() - 4);
-                    indices.push_back(vertices.size() - 3);
-                    indices.push_back(vertices.size() - 2);
-                    indices.push_back(vertices.size() - 2);
-                    indices.push_back(vertices.size() - 1);
-                    indices.push_back(vertices.size() - 4);
+                    Vertex v1{{-0.5f + fX, -0.5f + fY, -0.5f + fZ}, Normal::Back, glm::vec2{uSide + 1, vSide + 1} * stride};
+                    Vertex v2{{-0.5f + fX,  0.5f + fY, -0.5f + fZ}, Normal::Back, glm::vec2{uSide + 1, vSide} * stride};
+                    Vertex v3{{ 0.5f + fX,  0.5f + fY, -0.5f + fZ}, Normal::Back, glm::vec2{uSide, vSide} * stride};
+                    Vertex v4{{ 0.5f + fX, -0.5f + fY, -0.5f + fZ}, Normal::Back, glm::vec2{uSide, vSide + 1} * stride};
+                    addFace(v1, v2, v3, v4);
                 }
             }
         }
