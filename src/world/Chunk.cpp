@@ -1,7 +1,7 @@
 #include <chrono>
 #include <iostream>
 #include "rendering/Mesh.hpp"
-#include "utils/Normal.hpp"
+#include "utils/Face.hpp"
 #include "world/Chunk.hpp"
 #include "world/Block.hpp"
 
@@ -47,14 +47,6 @@ void Chunk::buildMesh() {
 
                 if (type == 0) continue;
 
-                constexpr float stride = 1.f / Config::Textures::inRow;
-
-                const auto uSide = static_cast<float>(sideTex % 16);
-                const auto vSide = static_cast<float>(sideTex >> 4);
-                const auto uTop = static_cast<float>(topTex % 16);
-                const auto vTop = static_cast<float>(topTex >> 4);
-                const auto uBottom = static_cast<float>(bottomTex % 16);
-                const auto vBottom = static_cast<float>(bottomTex >> 4);
 
                 const auto fX = static_cast<float>(x);
                 const auto fY = static_cast<float>(y);
@@ -62,50 +54,50 @@ void Chunk::buildMesh() {
 
                 // left face
                 if (isAir({x - 1, y, z})) {
-                    Vertex v1{{-0.5f + fX, -0.5f + fY, -0.5f + fZ}, Normal::Left, glm::vec2{uSide, vSide + 1} * stride};
-                    Vertex v2{{-0.5f + fX, -0.5f + fY,  0.5f + fZ}, Normal::Left, glm::vec2{uSide + 1, vSide + 1} * stride};
-                    Vertex v3{{-0.5f + fX,  0.5f + fY,  0.5f + fZ}, Normal::Left, glm::vec2{uSide + 1, vSide} * stride};
-                    Vertex v4{{-0.5f + fX,  0.5f + fY, -0.5f + fZ}, Normal::Left, glm::vec2{uSide, vSide} * stride};
+                    Vertex v1{{-0.5f + fX, -0.5f + fY, -0.5f + fZ}, Face::Left, sideTex};
+                    Vertex v2{{-0.5f + fX, -0.5f + fY,  0.5f + fZ}, Face::Left, sideTex};
+                    Vertex v3{{-0.5f + fX,  0.5f + fY,  0.5f + fZ}, Face::Left, sideTex};
+                    Vertex v4{{-0.5f + fX,  0.5f + fY, -0.5f + fZ}, Face::Left, sideTex};
                     addFace(v1, v2, v3, v4);
                 }
                 // right face
                 if (isAir({x + 1, y, z})) {
-                    Vertex v1{{ 0.5f + fX, -0.5f + fY, -0.5f + fZ}, Normal::Right, glm::vec2{uSide + 1, vSide + 1} * stride};
-                    Vertex v2{{ 0.5f + fX,  0.5f + fY, -0.5f + fZ}, Normal::Right, glm::vec2{uSide + 1, vSide} * stride};
-                    Vertex v3{{ 0.5f + fX,  0.5f + fY,  0.5f + fZ}, Normal::Right, glm::vec2{uSide, vSide} * stride};
-                    Vertex v4{{ 0.5f + fX, -0.5f + fY,  0.5f + fZ}, Normal::Right, glm::vec2{uSide, vSide + 1} * stride};
+                    Vertex v1{{ 0.5f + fX, -0.5f + fY, -0.5f + fZ}, Face::Right, sideTex};
+                    Vertex v2{{ 0.5f + fX,  0.5f + fY, -0.5f + fZ}, Face::Right, sideTex};
+                    Vertex v3{{ 0.5f + fX,  0.5f + fY,  0.5f + fZ}, Face::Right, sideTex};
+                    Vertex v4{{ 0.5f + fX, -0.5f + fY,  0.5f + fZ}, Face::Right, sideTex};
                     addFace(v1, v2, v3, v4);
                 }
                 // bottom face
                 if (isAir({x, y - 1, z})) {
-                    Vertex v1{{-0.5f + fX, -0.5f + fY, -0.5f + fZ}, Normal::Bottom, glm::vec2{uBottom, vBottom + 1} * stride};
-                    Vertex v2{{ 0.5f + fX, -0.5f + fY, -0.5f + fZ}, Normal::Bottom, glm::vec2{uBottom + 1, vBottom + 1} * stride};
-                    Vertex v3{{ 0.5f + fX, -0.5f + fY,  0.5f + fZ}, Normal::Bottom, glm::vec2{uBottom + 1, vBottom} * stride};
-                    Vertex v4{{-0.5f + fX, -0.5f + fY,  0.5f + fZ}, Normal::Bottom, glm::vec2{uBottom, vBottom} * stride};
+                    Vertex v1{{-0.5f + fX, -0.5f + fY, -0.5f + fZ}, Face::Bottom, bottomTex};
+                    Vertex v2{{ 0.5f + fX, -0.5f + fY, -0.5f + fZ}, Face::Bottom, bottomTex};
+                    Vertex v3{{ 0.5f + fX, -0.5f + fY,  0.5f + fZ}, Face::Bottom, bottomTex};
+                    Vertex v4{{-0.5f + fX, -0.5f + fY,  0.5f + fZ}, Face::Bottom, bottomTex};
                     addFace(v1, v2, v3, v4);
                 }
                 // top face
                 if (isAir({x, y + 1, z})) {
-                    Vertex v1{{ 0.5f + fX,  0.5f + fY,  0.5f + fZ}, Normal::Top, glm::vec2{uTop + 1, vTop + 1} * stride};
-                    Vertex v2{{ 0.5f + fX,  0.5f + fY, -0.5f + fZ}, Normal::Top, glm::vec2{uTop + 1, vTop} * stride};
-                    Vertex v3{{-0.5f + fX,  0.5f + fY, -0.5f + fZ}, Normal::Top, glm::vec2{uTop, vTop} * stride};
-                    Vertex v4{{-0.5f + fX,  0.5f + fY,  0.5f + fZ}, Normal::Top, glm::vec2{uTop, vTop + 1} * stride};
+                    Vertex v1{{ 0.5f + fX,  0.5f + fY,  0.5f + fZ}, Face::Top, topTex};
+                    Vertex v2{{ 0.5f + fX,  0.5f + fY, -0.5f + fZ}, Face::Top, topTex};
+                    Vertex v3{{-0.5f + fX,  0.5f + fY, -0.5f + fZ}, Face::Top, topTex};
+                    Vertex v4{{-0.5f + fX,  0.5f + fY,  0.5f + fZ}, Face::Top, topTex};
                     addFace(v1, v2, v3, v4);
                 }
                 // front face
                 if (isAir({x, y, z + 1})) {
-                    Vertex v1{{-0.5f + fX, -0.5f + fY,  0.5f + fZ}, Normal::Front, glm::vec2{uSide, vSide + 1} * stride};
-                    Vertex v2{{ 0.5f + fX, -0.5f + fY,  0.5f + fZ}, Normal::Front, glm::vec2{uSide + 1, vSide + 1} * stride};
-                    Vertex v3{{ 0.5f + fX,  0.5f + fY,  0.5f + fZ}, Normal::Front, glm::vec2{uSide + 1, vSide} * stride};
-                    Vertex v4{{-0.5f + fX,  0.5f + fY,  0.5f + fZ}, Normal::Front, glm::vec2{uSide, vSide} * stride};
+                    Vertex v1{{-0.5f + fX, -0.5f + fY,  0.5f + fZ}, Face::Front, sideTex};
+                    Vertex v2{{ 0.5f + fX, -0.5f + fY,  0.5f + fZ}, Face::Front, sideTex};
+                    Vertex v3{{ 0.5f + fX,  0.5f + fY,  0.5f + fZ}, Face::Front, sideTex};
+                    Vertex v4{{-0.5f + fX,  0.5f + fY,  0.5f + fZ}, Face::Front, sideTex};
                     addFace(v1, v2, v3, v4);
                 }
                 // back face
                 if (isAir({x, y, z - 1})) {
-                    Vertex v1{{-0.5f + fX, -0.5f + fY, -0.5f + fZ}, Normal::Back, glm::vec2{uSide + 1, vSide + 1} * stride};
-                    Vertex v2{{-0.5f + fX,  0.5f + fY, -0.5f + fZ}, Normal::Back, glm::vec2{uSide + 1, vSide} * stride};
-                    Vertex v3{{ 0.5f + fX,  0.5f + fY, -0.5f + fZ}, Normal::Back, glm::vec2{uSide, vSide} * stride};
-                    Vertex v4{{ 0.5f + fX, -0.5f + fY, -0.5f + fZ}, Normal::Back, glm::vec2{uSide, vSide + 1} * stride};
+                    Vertex v1{{-0.5f + fX, -0.5f + fY, -0.5f + fZ}, Face::Back, sideTex};
+                    Vertex v2{{-0.5f + fX,  0.5f + fY, -0.5f + fZ}, Face::Back, sideTex};
+                    Vertex v3{{ 0.5f + fX,  0.5f + fY, -0.5f + fZ}, Face::Back, sideTex};
+                    Vertex v4{{ 0.5f + fX, -0.5f + fY, -0.5f + fZ}, Face::Back, sideTex};
                     addFace(v1, v2, v3, v4);
                 }
             }

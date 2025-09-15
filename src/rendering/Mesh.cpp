@@ -38,17 +38,17 @@ Mesh::Mesh(const std::vector<Vertex>& vertices, const std::vector<uint32_t>& ind
     glEnableVertexAttribArray(1);
     glVertexAttribIPointer(
         1, 1,
-        GL_INT,
+        GL_UNSIGNED_BYTE,
         sizeof(Vertex),
-        reinterpret_cast<void*>(offsetof(Vertex, normal))
+        reinterpret_cast<void*>(offsetof(Vertex, face))
     );
 
     glEnableVertexAttribArray(2);
-    glVertexAttribPointer(
-        2, 2,
-        GL_FLOAT, GL_FALSE,
+    glVertexAttribIPointer(
+        2, 1,
+        GL_UNSIGNED_BYTE,
         sizeof(Vertex),
-        reinterpret_cast<void*>(offsetof(Vertex, uv))
+        reinterpret_cast<void*>(offsetof(Vertex, textureIndex))
     );
 
     glBindVertexArray(0);

@@ -1,6 +1,7 @@
 #pragma once
+#include <cstdint>
 
-enum class Normal {
+enum class Face : uint8_t {
     Left = 0,
     Right = 1,
     Bottom = 2,
