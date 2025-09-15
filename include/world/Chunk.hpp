@@ -6,16 +6,16 @@
 #include "rendering/Mesh.hpp"
 #include "rendering/Vertex.hpp"
 
+struct Block;
 class Mesh;
 
 class Chunk {
 public:
-    Chunk();
+    explicit Chunk(const std::array<uint8_t, Config::Rendering::chunkVolume>& blocks);
 
     void draw() const;
 private:
-    void generate();
-    static void makeBlockMesh(uint8_t type, float x, float y, float z, std::vector<Vertex>& vertices, std::vector<uint32_t>& indices);
+    static void makeBlockMesh(Block block, float x, float y, float z, std::vector<Vertex>& vertices, std::vector<uint32_t>& indices);
     void buildMesh();
 
     std::array<uint8_t, Config::Rendering::chunkVolume> m_blocks{};

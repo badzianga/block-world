@@ -12,6 +12,7 @@
 #include "rendering/Texture.hpp"
 #include "utils/ImGuiDebug.hpp"
 #include "world/Chunk.hpp"
+#include "world/Generator.hpp"
 
 Application::Application() {
     if (!glfwInit()) {
@@ -68,7 +69,7 @@ Application::~Application() {
 void Application::run() {
     p_timer->init();
 
-    Chunk chunk;
+    Chunk chunk{Generator::generate()};
     Shader shader{"../res/shaders/cube.vert", "../res/shaders/cube.frag"};
     Texture texture{"../res/textures/terrain.png"};
 
