@@ -26,10 +26,10 @@ void Chunk::makeBlockMesh(Block block, float x, float y, float z, std::vector<Ve
     const auto vBottom = static_cast<float>(block.bottom >> 4);
 
     // front
-    vertices.push_back({{-0.5f + x, -0.5f + y,  0.5f + z}, Normal::front, glm::vec2{uSide, vSide + 1} * stride});
-    vertices.push_back({{ 0.5f + x, -0.5f + y,  0.5f + z}, Normal::front, glm::vec2{uSide + 1, vSide + 1} * stride});
-    vertices.push_back({{ 0.5f + x,  0.5f + y,  0.5f + z}, Normal::front, glm::vec2{uSide + 1, vSide} * stride});
-    vertices.push_back({{-0.5f + x,  0.5f + y,  0.5f + z}, Normal::front, glm::vec2{uSide, vSide} * stride});
+    vertices.push_back({{-0.5f + x, -0.5f + y,  0.5f + z}, Normal::Front, glm::vec2{uSide, vSide + 1} * stride});
+    vertices.push_back({{ 0.5f + x, -0.5f + y,  0.5f + z}, Normal::Front, glm::vec2{uSide + 1, vSide + 1} * stride});
+    vertices.push_back({{ 0.5f + x,  0.5f + y,  0.5f + z}, Normal::Front, glm::vec2{uSide + 1, vSide} * stride});
+    vertices.push_back({{-0.5f + x,  0.5f + y,  0.5f + z}, Normal::Front, glm::vec2{uSide, vSide} * stride});
     indices.push_back(vertices.size() - 4);
     indices.push_back(vertices.size() - 3);
     indices.push_back(vertices.size() - 2);
@@ -37,10 +37,10 @@ void Chunk::makeBlockMesh(Block block, float x, float y, float z, std::vector<Ve
     indices.push_back(vertices.size() - 1);
     indices.push_back(vertices.size() - 4);
     // back
-    vertices.push_back({{-0.5f + x, -0.5f + y, -0.5f + z}, Normal::back, glm::vec2{uSide + 1, vSide + 1} * stride});
-    vertices.push_back({{-0.5f + x,  0.5f + y, -0.5f + z}, Normal::back, glm::vec2{uSide + 1, vSide} * stride});
-    vertices.push_back({{ 0.5f + x,  0.5f + y, -0.5f + z}, Normal::back, glm::vec2{uSide, vSide} * stride});
-    vertices.push_back({{ 0.5f + x, -0.5f + y, -0.5f + z}, Normal::back, glm::vec2{uSide, vSide + 1} * stride});
+    vertices.push_back({{-0.5f + x, -0.5f + y, -0.5f + z}, Normal::Back, glm::vec2{uSide + 1, vSide + 1} * stride});
+    vertices.push_back({{-0.5f + x,  0.5f + y, -0.5f + z}, Normal::Back, glm::vec2{uSide + 1, vSide} * stride});
+    vertices.push_back({{ 0.5f + x,  0.5f + y, -0.5f + z}, Normal::Back, glm::vec2{uSide, vSide} * stride});
+    vertices.push_back({{ 0.5f + x, -0.5f + y, -0.5f + z}, Normal::Back, glm::vec2{uSide, vSide + 1} * stride});
     indices.push_back(vertices.size() - 4);
     indices.push_back(vertices.size() - 3);
     indices.push_back(vertices.size() - 2);
@@ -48,10 +48,10 @@ void Chunk::makeBlockMesh(Block block, float x, float y, float z, std::vector<Ve
     indices.push_back(vertices.size() - 1);
     indices.push_back(vertices.size() - 4);
     // left
-    vertices.push_back({{-0.5f + x, -0.5f + y, -0.5f + z}, Normal::left, glm::vec2{uSide, vSide + 1} * stride});
-    vertices.push_back({{-0.5f + x, -0.5f + y,  0.5f + z}, Normal::left, glm::vec2{uSide + 1, vSide + 1} * stride});
-    vertices.push_back({{-0.5f + x,  0.5f + y,  0.5f + z}, Normal::left, glm::vec2{uSide + 1, vSide} * stride});
-    vertices.push_back({{-0.5f + x,  0.5f + y, -0.5f + z}, Normal::left, glm::vec2{uSide, vSide} * stride});
+    vertices.push_back({{-0.5f + x, -0.5f + y, -0.5f + z}, Normal::Left, glm::vec2{uSide, vSide + 1} * stride});
+    vertices.push_back({{-0.5f + x, -0.5f + y,  0.5f + z}, Normal::Left, glm::vec2{uSide + 1, vSide + 1} * stride});
+    vertices.push_back({{-0.5f + x,  0.5f + y,  0.5f + z}, Normal::Left, glm::vec2{uSide + 1, vSide} * stride});
+    vertices.push_back({{-0.5f + x,  0.5f + y, -0.5f + z}, Normal::Left, glm::vec2{uSide, vSide} * stride});
     indices.push_back(vertices.size() - 4);
     indices.push_back(vertices.size() - 3);
     indices.push_back(vertices.size() - 2);
@@ -59,10 +59,10 @@ void Chunk::makeBlockMesh(Block block, float x, float y, float z, std::vector<Ve
     indices.push_back(vertices.size() - 1);
     indices.push_back(vertices.size() - 4);
     // right
-    vertices.push_back({{ 0.5f + x, -0.5f + y, -0.5f + z}, Normal::right, glm::vec2{uSide + 1, vSide + 1} * stride});
-    vertices.push_back({{ 0.5f + x,  0.5f + y, -0.5f + z}, Normal::right, glm::vec2{uSide + 1, vSide} * stride});
-    vertices.push_back({{ 0.5f + x,  0.5f + y,  0.5f + z}, Normal::right, glm::vec2{uSide, vSide} * stride});
-    vertices.push_back({{ 0.5f + x, -0.5f + y,  0.5f + z}, Normal::right, glm::vec2{uSide, vSide + 1} * stride});
+    vertices.push_back({{ 0.5f + x, -0.5f + y, -0.5f + z}, Normal::Right, glm::vec2{uSide + 1, vSide + 1} * stride});
+    vertices.push_back({{ 0.5f + x,  0.5f + y, -0.5f + z}, Normal::Right, glm::vec2{uSide + 1, vSide} * stride});
+    vertices.push_back({{ 0.5f + x,  0.5f + y,  0.5f + z}, Normal::Right, glm::vec2{uSide, vSide} * stride});
+    vertices.push_back({{ 0.5f + x, -0.5f + y,  0.5f + z}, Normal::Right, glm::vec2{uSide, vSide + 1} * stride});
     indices.push_back(vertices.size() - 4);
     indices.push_back(vertices.size() - 3);
     indices.push_back(vertices.size() - 2);
@@ -70,10 +70,10 @@ void Chunk::makeBlockMesh(Block block, float x, float y, float z, std::vector<Ve
     indices.push_back(vertices.size() - 1);
     indices.push_back(vertices.size() - 4);
     // top
-    vertices.push_back({{-0.5f + x,  0.5f + y, -0.5f + z}, Normal::top, glm::vec2{uTop, vTop} * stride});
-    vertices.push_back({{-0.5f + x,  0.5f + y,  0.5f + z}, Normal::top, glm::vec2{uTop, vTop + 1} * stride});
-    vertices.push_back({{ 0.5f + x,  0.5f + y,  0.5f + z}, Normal::top, glm::vec2{uTop + 1, vTop + 1} * stride});
-    vertices.push_back({{ 0.5f + x,  0.5f + y, -0.5f + z}, Normal::top, glm::vec2{uTop + 1, vTop} * stride});
+    vertices.push_back({{-0.5f + x,  0.5f + y, -0.5f + z}, Normal::Top, glm::vec2{uTop, vTop} * stride});
+    vertices.push_back({{-0.5f + x,  0.5f + y,  0.5f + z}, Normal::Top, glm::vec2{uTop, vTop + 1} * stride});
+    vertices.push_back({{ 0.5f + x,  0.5f + y,  0.5f + z}, Normal::Top, glm::vec2{uTop + 1, vTop + 1} * stride});
+    vertices.push_back({{ 0.5f + x,  0.5f + y, -0.5f + z}, Normal::Top, glm::vec2{uTop + 1, vTop} * stride});
     indices.push_back(vertices.size() - 4);
     indices.push_back(vertices.size() - 3);
     indices.push_back(vertices.size() - 2);
@@ -81,10 +81,10 @@ void Chunk::makeBlockMesh(Block block, float x, float y, float z, std::vector<Ve
     indices.push_back(vertices.size() - 1);
     indices.push_back(vertices.size() - 4);
     // bottom
-    vertices.push_back({{-0.5f + x, -0.5f + y, -0.5f + z}, Normal::bottom, glm::vec2{uBottom, vBottom + 1} * stride});
-    vertices.push_back({{ 0.5f + x, -0.5f + y, -0.5f + z}, Normal::bottom, glm::vec2{uBottom + 1, vBottom + 1} * stride});
-    vertices.push_back({{ 0.5f + x, -0.5f + y,  0.5f + z}, Normal::bottom, glm::vec2{uBottom + 1, vBottom} * stride});
-    vertices.push_back({{-0.5f + x, -0.5f + y,  0.5f + z}, Normal::bottom, glm::vec2{uBottom, vBottom} * stride});
+    vertices.push_back({{-0.5f + x, -0.5f + y, -0.5f + z}, Normal::Bottom, glm::vec2{uBottom, vBottom + 1} * stride});
+    vertices.push_back({{ 0.5f + x, -0.5f + y, -0.5f + z}, Normal::Bottom, glm::vec2{uBottom + 1, vBottom + 1} * stride});
+    vertices.push_back({{ 0.5f + x, -0.5f + y,  0.5f + z}, Normal::Bottom, glm::vec2{uBottom + 1, vBottom} * stride});
+    vertices.push_back({{-0.5f + x, -0.5f + y,  0.5f + z}, Normal::Bottom, glm::vec2{uBottom, vBottom} * stride});
     indices.push_back(vertices.size() - 4);
     indices.push_back(vertices.size() - 3);
     indices.push_back(vertices.size() - 2);
