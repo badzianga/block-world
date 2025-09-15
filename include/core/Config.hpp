@@ -24,10 +24,4 @@ namespace Config {
         constexpr int chunkArea = chunkSize * chunkSize;
         constexpr int chunkVolume = chunkArea * chunkSize;
     }  // Rendering
-
-    namespace Textures {
-        constexpr int textureSize = 16;
-        constexpr int atlasSize = 256;
-        constexpr int inRow = atlasSize / textureSize;
-    }  // Textures
 }  // Config
