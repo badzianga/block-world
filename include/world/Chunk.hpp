@@ -11,13 +11,13 @@ class Mesh;
 
 class Chunk {
 public:
-    explicit Chunk(const std::array<uint8_t, Config::Rendering::chunkVolume>& blocks);
+    explicit Chunk(const std::array<BlockType, Config::Chunk::volume>& blocks);
 
     void draw() const;
 private:
     [[nodiscard]] bool isAir(const glm::ivec3& localPos) const;
     void buildMesh();
 
-    std::array<uint8_t, Config::Rendering::chunkVolume> m_blocks{};
+    std::array<BlockType, Config::Chunk::volume> m_blocks{};
     std::unique_ptr<Mesh> p_mesh;
 };

@@ -5,7 +5,7 @@
 #include "world/Chunk.hpp"
 #include "world/Block.hpp"
 
-Chunk::Chunk(const std::array<uint8_t, Config::Rendering::chunkVolume>& blocks) : m_blocks(blocks) {
+Chunk::Chunk(const std::array<BlockType, Config::Chunk::volume>& blocks) : m_blocks(blocks) {
     buildMesh();
 }
 
@@ -14,13 +14,13 @@ void Chunk::draw() const {
 }
 
 bool Chunk::isAir(const glm::ivec3& localPos) const {
-    if (localPos.x < 0 || localPos.x >= Config::Rendering::chunkSize ||
-        localPos.y < 0 || localPos.y >= Config::Rendering::chunkSize ||
-        localPos.z < 0 || localPos.z >= Config::Rendering::chunkSize)
+    if (localPos.x < 0 || localPos.x >= Config::Chunk::size ||
+        localPos.y < 0 || localPos.y >= Config::Chunk::size ||
+        localPos.z < 0 || localPos.z >= Config::Chunk::size)
     {
         return true;
     }
-    return m_blocks[localPos.x + localPos.y * Config::Rendering::chunkSize + localPos.z * Config::Rendering::chunkArea] == 0;
+    return m_blocks[localPos.x + localPos.y * Config::Chunk::size + localPos.z * Config::Chunk::area] == BlockType::Air;
 }
 
 void Chunk::buildMesh() {
@@ -39,14 +39,14 @@ void Chunk::buildMesh() {
         });
     };
 
-    for (int z = 0; z < Config::Rendering::chunkSize; ++z) {
-        for (int y = 0; y < Config::Rendering::chunkSize; ++y) {
-            for (int x = 0; x < Config::Rendering::chunkSize; ++x) {
-                const uint8_t type = m_blocks[x + Config::Rendering::chunkSize * y + Config::Rendering::chunkArea * z];
-                const auto [topTex, sideTex, bottomTex] = blocks[type];
+    for (int z = 0; z < Config::Chunk::size; ++z) {
+        for (int y = 0; y < Config::Chunk::size; ++y) {
+            for (int x = 0; x < Config::Chunk::size; ++x) {
+                const BlockType type = m_blocks[x + Config::Chunk::size * y + Config::Chunk::area * z];
 
-                if (type == 0) continue;
+                if (type == BlockType::Air) continue;
 
+                const auto [topTex, sideTex, bottomTex] = blocks[static_cast<uint8_t>(type)];
 
                 const auto fX = static_cast<float>(x);
                 const auto fY = static_cast<float>(y);

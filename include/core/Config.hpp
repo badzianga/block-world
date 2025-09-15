@@ -8,7 +8,7 @@ namespace Config {
     }  // Window
 
     namespace Graphics {
-        constexpr bool vsync = true;
+        constexpr bool vsync = false;
         constexpr float fov = 45.f;
         constexpr float nearPlane = 0.1f;
         constexpr float farPlane = 100.f;
@@ -19,9 +19,9 @@ namespace Config {
         constexpr float mouseSensitivity = 0.25f;
     }  // Gameplay
 
-    namespace Rendering {
-        constexpr int chunkSize = 16;
-        constexpr int chunkArea = chunkSize * chunkSize;
-        constexpr int chunkVolume = chunkArea * chunkSize;
+    namespace Chunk {
+        constexpr int size = 16;
+        constexpr int area = size * size;
+        constexpr int volume = area * size;
     }  // Rendering
 }  // Config

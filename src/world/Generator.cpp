@@ -7,27 +7,27 @@
 Chunk Generator::generate() {
     std::chrono::high_resolution_clock::time_point start = std::chrono::high_resolution_clock::now();
 
-    std::array<uint8_t, Config::Rendering::chunkVolume> blocks{};
+    std::array<BlockType, Config::Chunk::volume> blocks{};
 
-    for (int z = 0; z < Config::Rendering::chunkSize; ++z) {
-        for (int y = 0; y < Config::Rendering::chunkSize; ++y) {
-            for (int x = 0; x < Config::Rendering::chunkSize; ++x) {
-                int type = 0;
+    for (int z = 0; z < Config::Chunk::size; ++z) {
+        for (int y = 0; y < Config::Chunk::size; ++y) {
+            for (int x = 0; x < Config::Chunk::size; ++x) {
+                BlockType type;
 
-                if (y == Config::Rendering::chunkSize - 1) {
-                    type = 0;
+                if (y == Config::Chunk::size - 1) {
+                    type = BlockType::Air;
                 }
-                else if (y > Config::Rendering::chunkSize - 3) {
-                    type = 2;
+                else if (y > Config::Chunk::size - 3) {
+                    type = BlockType::Grass;
                 }
-                else if (y > Config::Rendering::chunkSize * 3 / 5) {
-                    type = 1;
+                else if (y > Config::Chunk::size * 3 / 5) {
+                    type = BlockType::Dirt;
                 }
                 else {
-                    type = 3;
+                    type = BlockType::Stone;
                 }
 
-                blocks[z * Config::Rendering::chunkArea + y * Config::Rendering::chunkSize + x] = type;
+                blocks[z * Config::Chunk::area + y * Config::Chunk::size + x] = type;
             }
         }
     }
@@ -42,26 +42,26 @@ Chunk Generator::generate() {
 Chunk Generator::generateTerrain() {
     std::chrono::high_resolution_clock::time_point start = std::chrono::high_resolution_clock::now();
 
-    std::array<uint8_t, Config::Rendering::chunkVolume> blocks{};
+    std::array<BlockType, Config::Chunk::volume> blocks{};
 
-    for (int z = 0; z < Config::Rendering::chunkSize; ++z) {
-        for (int x = 0; x < Config::Rendering::chunkSize; ++x) {
-            int type = 0;
+    for (int z = 0; z < Config::Chunk::size; ++z) {
+        for (int x = 0; x < Config::Chunk::size; ++x) {
+            BlockType type = BlockType::Air;
 
             auto localHeight = static_cast<int>(glm::simplex(glm::vec2(x, z) * 0.01f) * 4 + 8);
 
             for (int y = 0; y < localHeight; ++y) {
                 if (y < localHeight - 4) {
-                    type = 3;
+                    type = BlockType::Stone;
                 }
                 else if (y < localHeight - 1) {
-                    type = 1;
+                    type = BlockType::Dirt;
                 }
                 else {
-                    type = 2;
+                    type = BlockType::Grass;
                 }
 
-                blocks[z * Config::Rendering::chunkArea + y * Config::Rendering::chunkSize + x] = type;
+                blocks[z * Config::Chunk::area + y * Config::Chunk::size + x] = type;
             }
         }
     }

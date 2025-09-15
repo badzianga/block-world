@@ -1,17 +1,29 @@
 #pragma once
 #include <cstdint>
 
-// TODO: use enums to eliminate magic numbers
+enum class BlockType : uint8_t {
+    Air = 0,
+    Dirt = 1,
+    Grass = 2,
+    Stone = 3,
+};
+
+enum class TextureType : uint8_t {
+    Dirt = 0,
+    Grass = 1,
+    GrassSide = 2,
+    Stone = 3,
+};
 
 struct Block {
-    uint8_t top;
-    uint8_t side;
-    uint8_t bottom;
+    TextureType top;
+    TextureType side;
+    TextureType bottom;
 };
 
 static Block blocks[UINT8_MAX] = {
-    {0, 0, 0},  // air
-    {0, 0, 0},  // dirt
-    {1, 2, 0},  // grass
-    {3, 3, 3},  // stone
+    {},  // air
+    {TextureType::Dirt, TextureType::Dirt, TextureType::Dirt},  // dirt
+    {TextureType::Grass, TextureType::GrassSide, TextureType::Dirt},  // grass
+    {TextureType::Stone, TextureType::Stone, TextureType::Stone},  // stone
 };
