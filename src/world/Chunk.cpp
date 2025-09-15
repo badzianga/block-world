@@ -32,8 +32,11 @@ void Chunk::buildMesh() {
     auto addFace = [&](const Vertex& v1, const Vertex& v2, const Vertex& v3, const Vertex& v4) -> void {
         // interesting thing is, using reserve before insert here makes mesh building 10x slower (~0.0006s -> ~0.006s)
         vertices.insert(vertices.end(), {v1, v2, v3, v4});
-        indices.insert(indices.end(), {vertices.size() - 4, vertices.size() - 3, vertices.size() - 2,
-                                                  vertices.size() - 2, vertices.size() - 1, vertices.size() - 4});
+        indices.insert(indices.end(), {
+            static_cast<uint32_t>(vertices.size() - 4), static_cast<uint32_t>(vertices.size() - 3),
+            static_cast<uint32_t>(vertices.size() - 2), static_cast<uint32_t>(vertices.size() - 2),
+            static_cast<uint32_t>(vertices.size() - 1), static_cast<uint32_t>(vertices.size() - 4)
+        });
     };
 
     for (int z = 0; z < Config::Rendering::chunkSize; ++z) {
