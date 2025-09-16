@@ -4,7 +4,7 @@
 #include "world/Chunk.hpp"
 #include "world/Generator.hpp"
 
-Chunk Generator::generate() {
+Chunk Generator::generate(glm::ivec3 chunkPos) {
     std::chrono::high_resolution_clock::time_point start = std::chrono::high_resolution_clock::now();
 
     std::array<BlockType, Config::Chunk::volume> blocks{};
@@ -36,39 +36,35 @@ Chunk Generator::generate() {
     std::chrono::duration<double> elapsed_seconds = end - start;
     std::cout << "Chunk generated in " << elapsed_seconds.count() << " seconds\n";
 
-    return Chunk(blocks);
+    return Chunk(chunkPos, blocks);
 }
 
-Chunk Generator::generateTerrain() {
-    std::chrono::high_resolution_clock::time_point start = std::chrono::high_resolution_clock::now();
-
+Chunk Generator::generateTerrain(glm::ivec3 chunkPos) {
     std::array<BlockType, Config::Chunk::volume> blocks{};
+    bool edited = false;
 
     for (int z = 0; z < Config::Chunk::size; ++z) {
+        int worldZ = chunkPos.z * Config::Chunk::size + z;
+
         for (int x = 0; x < Config::Chunk::size; ++x) {
+            int worldX = chunkPos.x * Config::Chunk::size + x;
+
             BlockType type = BlockType::Air;
 
-            auto localHeight = static_cast<int>(glm::simplex(glm::vec2(x, z) * 0.01f) * 4 + 8);
+            auto worldHeight = static_cast<int>(glm::simplex(glm::vec2(worldX, worldZ) * 0.01f) * 32 + 64);
 
-            for (int y = 0; y < localHeight; ++y) {
-                if (y < localHeight - 4) {
-                    type = BlockType::Stone;
+            for (int y = 0; y < Config::Chunk::size; ++y) {
+                int worldY = chunkPos.y * Config::Chunk::size + y;
+                if (worldY > worldHeight) {
+                    break;
                 }
-                else if (y < localHeight - 1) {
-                    type = BlockType::Dirt;
-                }
-                else {
-                    type = BlockType::Grass;
-                }
+                type = BlockType::Dirt;
 
                 blocks[z * Config::Chunk::area + y * Config::Chunk::size + x] = type;
+                edited = true;
             }
         }
     }
-
-    std::chrono::high_resolution_clock::time_point end = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<double> elapsed_seconds = end - start;
-    std::cout << "Chunk generated in " << elapsed_seconds.count() << " seconds\n";
-
-    return Chunk(blocks);
+    // TODO: use `edited` to decide during if chunk should build its mesh
+    return Chunk(chunkPos, blocks);
 }

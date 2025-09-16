@@ -1,15 +1,20 @@
 #include <chrono>
 #include <iostream>
+#include <glm/gtc/matrix_transform.hpp>
 #include "rendering/Mesh.hpp"
+#include "rendering/Shader.hpp"
 #include "utils/Face.hpp"
 #include "world/Chunk.hpp"
 #include "world/Block.hpp"
 
-Chunk::Chunk(const std::array<BlockType, Config::Chunk::volume>& blocks) : m_blocks(blocks) {
+Chunk::Chunk(glm::ivec3 position, const std::array<BlockType, Config::Chunk::volume>& blocks)
+    : m_position{position}, m_model(1.f), m_blocks(blocks) {
+    m_model = glm::translate(m_model, static_cast<glm::vec3>(m_position * Config::Chunk::size));
     buildMesh();
 }
 
-void Chunk::draw() const {
+void Chunk::draw(Shader& shader) const {
+    shader.set("u_model", m_model);
     p_mesh->draw();
 }
 

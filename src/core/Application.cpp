@@ -12,7 +12,7 @@
 #include "rendering/Texture.hpp"
 #include "utils/ImGuiDebug.hpp"
 #include "world/Chunk.hpp"
-#include "world/Generator.hpp"
+#include "world/World.hpp"
 
 Application::Application() {
     if (!glfwInit()) {
@@ -72,7 +72,7 @@ Application::~Application() {
 void Application::run() {
     p_timer->init();
 
-    Chunk chunk{Generator::generate()};
+    World world;
     Shader shader{"../res/shaders/cube.vert", "../res/shaders/cube.frag"};
     Texture texture{"../res/textures/terrain.png"};
 
@@ -82,6 +82,8 @@ void Application::run() {
     glClearColor(0.1f, 0.15f, 0.2f, 1.f);
 
     glfwSetInputMode(p_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+    shader.set("u_projection", Camera::getProjectionMatrix());
 
     while (!glfwWindowShouldClose(p_window)) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -96,12 +98,9 @@ void Application::run() {
         p_camera->update(p_timer->getDeltaTime());
         p_input->update();
 
-
-        shader.set("u_model", glm::mat4{1.f});
         shader.set("u_view", p_camera->getViewMatrix());
-        shader.set("u_projection", Camera::getProjectionMatrix());
 
-        chunk.draw();
+        world.draw(shader);
 
         ImGuiDebug::endFrame();
 

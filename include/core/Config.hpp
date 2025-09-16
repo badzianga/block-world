@@ -8,14 +8,14 @@ namespace Config {
     }  // Window
 
     namespace Graphics {
-        constexpr bool vsync = false;
+        constexpr bool vsync = true;
         constexpr float fov = 45.f;
         constexpr float nearPlane = 0.1f;
-        constexpr float farPlane = 100.f;
+        constexpr float farPlane = 1000.f;
     }  // Graphics
 
     namespace Gameplay {
-        constexpr float movementSpeed = 5.f;
+        constexpr float movementSpeed = 20.f;
         constexpr float mouseSensitivity = 0.25f;
     }  // Gameplay
 
