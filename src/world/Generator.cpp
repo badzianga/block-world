@@ -58,7 +58,16 @@ Chunk Generator::generateTerrain(glm::ivec3 chunkPos) {
                 if (worldY > worldHeight) {
                     break;
                 }
-                type = BlockType::Dirt;
+                if (worldY == worldHeight) {
+                    type = BlockType::Grass;
+                }
+                // making more types of blocks makes it slow, like 2,5x times slow
+                else if (worldY > worldHeight - 4) {
+                    type = BlockType::Dirt;
+                }
+                else {
+                    type = BlockType::Stone;
+                }
 
                 blocks[z * Config::Chunk::area + y * Config::Chunk::size + x] = type;
                 edited = true;
