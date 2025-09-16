@@ -1,5 +1,3 @@
-#include <chrono>
-#include <iostream>
 #include <glm/gtc/matrix_transform.hpp>
 #include "rendering/Mesh.hpp"
 #include "rendering/Shader.hpp"
@@ -29,8 +27,6 @@ bool Chunk::isAir(const glm::ivec3& localPos) const {
 }
 
 void Chunk::buildMesh() {
-    std::chrono::high_resolution_clock::time_point start = std::chrono::high_resolution_clock::now();
-
     std::vector<Vertex> vertices;
     std::vector<uint32_t> indices;
 
@@ -110,8 +106,4 @@ void Chunk::buildMesh() {
     }
 
     p_mesh = std::make_unique<Mesh>(vertices, indices);
-
-    std::chrono::high_resolution_clock::time_point end = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<double> elapsed_seconds = end - start;
-    std::cout << "Chunk mesh built in " << elapsed_seconds.count() << " seconds\n";
 }
