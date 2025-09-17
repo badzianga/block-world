@@ -5,15 +5,19 @@
 #include "world/Chunk.hpp"
 #include "world/Block.hpp"
 
-Chunk::Chunk(glm::ivec3 position, const std::array<BlockType, Config::Chunk::volume>& blocks)
-    : m_position{position}, m_model(1.f), m_blocks(blocks) {
+Chunk::Chunk(glm::ivec3 position, const std::array<BlockType, Config::Chunk::volume>& blocks, bool notEmpty)
+    : m_position{position}, m_model(1.f), m_blocks(blocks), m_notEmpty(notEmpty) {
     m_model = glm::translate(m_model, static_cast<glm::vec3>(m_position * Config::Chunk::size));
-    buildMesh();
+    if (m_notEmpty) {
+        buildMesh();
+    };
 }
 
 void Chunk::draw(Shader& shader) const {
-    shader.set("u_model", m_model);
-    p_mesh->draw();
+    if (m_notEmpty) {
+        shader.set("u_model", m_model);
+        p_mesh->draw();
+    }
 }
 
 bool Chunk::isAir(const glm::ivec3& localPos) const {

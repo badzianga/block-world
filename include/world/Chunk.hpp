@@ -13,7 +13,7 @@ class Shader;
 
 class Chunk {
 public:
-    explicit Chunk(glm::ivec3 position, const std::array<BlockType, Config::Chunk::volume>& blocks);
+    explicit Chunk(glm::ivec3 position, const std::array<BlockType, Config::Chunk::volume>& blocks, bool notEmpty);
 
     void draw(Shader& shader) const;
 private:
@@ -23,5 +23,6 @@ private:
     glm::ivec3 m_position;
     glm::mat4 m_model;
     std::array<BlockType, Config::Chunk::volume> m_blocks{};
+    bool m_notEmpty;
     std::unique_ptr<Mesh> p_mesh;
 };
