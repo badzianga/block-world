@@ -41,28 +41,27 @@ Chunk Generator::generate(glm::ivec3 chunkPos) {
 
 Chunk Generator::generateTerrain(glm::ivec3 chunkPos) {
     std::array<BlockType, Config::Chunk::volume> blocks{};
-    bool edited = false;
+
+    const glm::ivec3 c = chunkPos * Config::Chunk::size;
 
     for (int z = 0; z < Config::Chunk::size; ++z) {
-        int worldZ = chunkPos.z * Config::Chunk::size + z;
+        const int worldZ = c.z + z;
 
         for (int x = 0; x < Config::Chunk::size; ++x) {
-            int worldX = chunkPos.x * Config::Chunk::size + x;
+            const int worldX = c.x + x;
 
             BlockType type = BlockType::Air;
 
-            auto worldHeight = static_cast<int>(glm::simplex(glm::vec2(worldX, worldZ) * 0.01f) * 32 + 64);
+            const auto worldHeight = static_cast<int>(glm::simplex(glm::vec2(worldX, worldZ) * 0.01f) * 32 + 64);
+            const int localHeight = std::min(worldHeight - c.y, Config::Chunk::size);
 
-            for (int y = 0; y < Config::Chunk::size; ++y) {
-                int worldY = chunkPos.y * Config::Chunk::size + y;
-                if (worldY > worldHeight) {
-                    break;
-                }
-                if (worldY == worldHeight) {
+            for (int y = 0; y < localHeight; ++y) {
+                const int worldY = c.y + y;
+                if (worldY == worldHeight - 1) {
                     type = BlockType::Grass;
                 }
                 // making more types of blocks makes it slow, like 2,5x times slow
-                else if (worldY > worldHeight - 4) {
+                else if (worldY >= worldHeight - 4) {
                     type = BlockType::Dirt;
                 }
                 else {
@@ -70,7 +69,6 @@ Chunk Generator::generateTerrain(glm::ivec3 chunkPos) {
                 }
 
                 blocks[z * Config::Chunk::area + y * Config::Chunk::size + x] = type;
-                edited = true;
             }
         }
     }
