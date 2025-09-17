@@ -4,11 +4,12 @@
 #include "world/World.hpp"
 
 World::World() {
+    std::cout << "Starting world generation...\n";
     std::chrono::high_resolution_clock::time_point start = std::chrono::high_resolution_clock::now();
 
-    for (int z = -8; z < 8; ++z) {
-        for (int y = 0; y < 7; ++y) {
-            for (int x = -8; x < 8; ++x) {
+    for (int z = -2; z < 2; ++z) {
+        for (int y = 0; y < 6; ++y) {
+            for (int x = -2; x < 2; ++x) {
                 m_chunks[{x, y, z}] = std::make_unique<Chunk>(Generator::generateTerrain({x, y, z}));
             }
         }
