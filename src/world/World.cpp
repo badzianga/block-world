@@ -29,3 +29,19 @@ void World::draw(Shader& shader) const {
         chunk.second->draw(shader);
     }
 }
+
+const Chunk& World::getChunk(glm::ivec3 chunkPos) {
+    const auto it = m_chunks.find(chunkPos);
+    if (it == m_chunks.end()) {
+        return makeChunk(chunkPos);
+    }
+    return *it->second;
+}
+
+Chunk& World::makeChunk(glm::ivec3 chunkPos) {
+    auto [it, inserted] = m_chunks.try_emplace(chunkPos, std::make_unique<Chunk>(Generator::generateTerrain(chunkPos)));
+    if (!inserted) {
+        throw std::runtime_error("Chunk already exists, but shouldn't");
+    }
+    return *it->second;
+}
