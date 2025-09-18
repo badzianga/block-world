@@ -6,8 +6,8 @@
 #include "world/Block.hpp"
 
 Chunk::Chunk(glm::ivec3 position, const std::array<BlockType, Config::Chunk::volume>& blocks, bool notEmpty)
-    : m_position{position}, m_model(1.f), m_blocks(blocks), m_notEmpty(notEmpty) {
-    m_model = glm::translate(m_model, static_cast<glm::vec3>(m_position * Config::Chunk::size));
+    : m_model(1.f), m_blocks(blocks), m_notEmpty(notEmpty) {
+    m_model = glm::translate(m_model, static_cast<glm::vec3>(position * Config::Chunk::size));
     if (m_notEmpty) {
         buildMesh();
     };
@@ -35,7 +35,6 @@ void Chunk::buildMesh() {
     std::vector<uint32_t> indices;
 
     auto addFace = [&](const Vertex& v1, const Vertex& v2, const Vertex& v3, const Vertex& v4) -> void {
-        // interesting thing is, using reserve before insert here makes mesh building 10x slower (~0.0006s -> ~0.006s)
         vertices.insert(vertices.end(), {v1, v2, v3, v4});
         indices.insert(indices.end(), {
             static_cast<uint32_t>(vertices.size() - 4), static_cast<uint32_t>(vertices.size() - 3),

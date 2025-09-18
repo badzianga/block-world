@@ -20,7 +20,6 @@ private:
     [[nodiscard]] bool isAir(const glm::ivec3& localPos) const;
     void buildMesh();
 
-    glm::ivec3 m_position;
     glm::mat4 m_model;
     std::array<BlockType, Config::Chunk::volume> m_blocks{};
     bool m_notEmpty;
