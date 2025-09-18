@@ -10,7 +10,11 @@ World::World() {
     for (int z = -2; z < 2; ++z) {
         for (int y = 0; y < 6; ++y) {
             for (int x = -2; x < 2; ++x) {
-                m_chunks[{x, y, z}] = std::make_unique<Chunk>(Generator::generateTerrain({x, y, z}));
+            auto chunk = std::make_unique<Chunk>(Generator::generateTerrain({x, y, z}));
+            if (!chunk->hasMesh()) {
+                chunk->buildMesh();
+            }
+            m_chunks[{x, y, z}] = std::move(chunk);
             }
         }
     }

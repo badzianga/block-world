@@ -36,7 +36,7 @@ Chunk Generator::generate(glm::ivec3 chunkPos) {
     std::chrono::duration<double> elapsed_seconds = end - start;
     std::cout << "Chunk generated in " << elapsed_seconds.count() << " seconds\n";
 
-    return Chunk(chunkPos, blocks, true);
+    return Chunk(chunkPos, blocks);
 }
 
 Chunk Generator::generateTerrain(glm::ivec3 chunkPos) {
@@ -73,9 +73,5 @@ Chunk Generator::generateTerrain(glm::ivec3 chunkPos) {
         }
     }
 
-    const bool notEmpty = std::any_of(blocks.begin(), blocks.end(), [](const BlockType type) -> bool {
-        return type != BlockType::Air;
-    });
-
-    return Chunk(chunkPos, blocks, notEmpty);
+    return Chunk(chunkPos, blocks);
 }

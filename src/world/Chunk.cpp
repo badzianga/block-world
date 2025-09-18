@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <glm/gtc/matrix_transform.hpp>
 #include "rendering/Mesh.hpp"
 #include "rendering/Shader.hpp"
@@ -5,32 +6,23 @@
 #include "world/Chunk.hpp"
 #include "world/Block.hpp"
 
-Chunk::Chunk(glm::ivec3 position, const std::array<BlockType, Config::Chunk::volume>& blocks, bool notEmpty)
-    : m_model(1.f), m_blocks(blocks), m_notEmpty(notEmpty) {
+Chunk::Chunk(glm::ivec3 position, const std::array<BlockType, Config::Chunk::volume>& blocks)
+    : m_model(1.f), m_blocks(blocks) {
     m_model = glm::translate(m_model, static_cast<glm::vec3>(position * Config::Chunk::size));
-    if (m_notEmpty) {
-        buildMesh();
-    };
+    m_isEmpty = !std::ranges::any_of(blocks, [](const BlockType type) -> bool {
+        return type != BlockType::Air;
+    });
 }
 
-void Chunk::draw(Shader& shader) const {
-    if (m_notEmpty) {
-        shader.set("u_model", m_model);
-        p_mesh->draw();
-    }
-}
-
-bool Chunk::isAir(const glm::ivec3& localPos) const {
-    if (localPos.x < 0 || localPos.x >= Config::Chunk::size ||
-        localPos.y < 0 || localPos.y >= Config::Chunk::size ||
-        localPos.z < 0 || localPos.z >= Config::Chunk::size)
-    {
-        return true;
-    }
-    return m_blocks[localPos.x + localPos.y * Config::Chunk::size + localPos.z * Config::Chunk::area] == BlockType::Air;
+bool Chunk::hasMesh() const {
+    return p_mesh != nullptr;
 }
 
 void Chunk::buildMesh() {
+    m_built = true;
+    if (m_isEmpty) {
+        return;
+    }
     std::vector<Vertex> vertices;
     std::vector<uint32_t> indices;
 
@@ -109,4 +101,21 @@ void Chunk::buildMesh() {
     }
 
     p_mesh = std::make_unique<Mesh>(vertices, indices);
+}
+
+void Chunk::draw(Shader& shader) const {
+    if (m_built && !m_isEmpty) {
+        shader.set("u_model", m_model);
+        p_mesh->draw();
+    }
+}
+
+bool Chunk::isAir(const glm::ivec3& localPos) const {
+    if (localPos.x < 0 || localPos.x >= Config::Chunk::size ||
+        localPos.y < 0 || localPos.y >= Config::Chunk::size ||
+        localPos.z < 0 || localPos.z >= Config::Chunk::size)
+    {
+        return true;
+    }
+    return m_blocks[localPos.x + localPos.y * Config::Chunk::size + localPos.z * Config::Chunk::area] == BlockType::Air;
 }
