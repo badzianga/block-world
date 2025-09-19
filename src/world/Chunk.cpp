@@ -5,9 +5,10 @@
 #include "utils/Face.hpp"
 #include "world/Chunk.hpp"
 #include "world/Block.hpp"
+#include "world/World.hpp"
 
 Chunk::Chunk(glm::ivec3 position, const std::array<BlockType, Config::Chunk::volume>& blocks)
-    : m_model(1.f), m_blocks(blocks) {
+    : m_position(position), m_model(1.f), m_blocks(blocks) {
     m_model = glm::translate(m_model, static_cast<glm::vec3>(position * Config::Chunk::size));
     m_isEmpty = !std::ranges::any_of(blocks, [](const BlockType type) -> bool {
         return type != BlockType::Air;
@@ -26,7 +27,16 @@ void Chunk::buildMesh() {
     std::vector<Vertex> vertices;
     std::vector<uint32_t> indices;
 
-    auto addFace = [&](const Vertex& v1, const Vertex& v2, const Vertex& v3, const Vertex& v4) -> void {
+    const std::array<std::reference_wrapper<const Chunk>, 6> neighborChunks = {
+        World::getRef().getChunk({m_position.x - 1, m_position.y,       m_position.z      }),
+        World::getRef().getChunk({m_position.x + 1, m_position.y,       m_position.z      }),
+        World::getRef().getChunk({m_position.x,       m_position.y - 1, m_position.z      }),
+        World::getRef().getChunk({m_position.x,       m_position.y + 1, m_position.z      }),
+        World::getRef().getChunk({m_position.x,       m_position.y,       m_position.z + 1}),
+        World::getRef().getChunk({m_position.x,       m_position.y,       m_position.z - 1}),
+    };
+
+    static const auto addFace = [&](const Vertex& v1, const Vertex& v2, const Vertex& v3, const Vertex& v4) -> void {
         vertices.insert(vertices.end(), {v1, v2, v3, v4});
         indices.insert(indices.end(), {
             static_cast<uint32_t>(vertices.size() - 4), static_cast<uint32_t>(vertices.size() - 3),
@@ -49,7 +59,7 @@ void Chunk::buildMesh() {
                 const auto fZ = static_cast<float>(z);
 
                 // left face
-                if (isAir({x - 1, y, z})) {
+                if (isAir({x - 1, y, z}, neighborChunks)) {
                     Vertex v1{{-0.5f + fX, -0.5f + fY, -0.5f + fZ}, Face::Left, sideTex};
                     Vertex v2{{-0.5f + fX, -0.5f + fY,  0.5f + fZ}, Face::Left, sideTex};
                     Vertex v3{{-0.5f + fX,  0.5f + fY,  0.5f + fZ}, Face::Left, sideTex};
@@ -57,7 +67,7 @@ void Chunk::buildMesh() {
                     addFace(v1, v2, v3, v4);
                 }
                 // right face
-                if (isAir({x + 1, y, z})) {
+                if (isAir({x + 1, y, z}, neighborChunks)) {
                     Vertex v1{{ 0.5f + fX, -0.5f + fY, -0.5f + fZ}, Face::Right, sideTex};
                     Vertex v2{{ 0.5f + fX,  0.5f + fY, -0.5f + fZ}, Face::Right, sideTex};
                     Vertex v3{{ 0.5f + fX,  0.5f + fY,  0.5f + fZ}, Face::Right, sideTex};
@@ -65,7 +75,7 @@ void Chunk::buildMesh() {
                     addFace(v1, v2, v3, v4);
                 }
                 // bottom face
-                if (isAir({x, y - 1, z})) {
+                if (isAir({x, y - 1, z}, neighborChunks)) {
                     Vertex v1{{-0.5f + fX, -0.5f + fY, -0.5f + fZ}, Face::Bottom, bottomTex};
                     Vertex v2{{ 0.5f + fX, -0.5f + fY, -0.5f + fZ}, Face::Bottom, bottomTex};
                     Vertex v3{{ 0.5f + fX, -0.5f + fY,  0.5f + fZ}, Face::Bottom, bottomTex};
@@ -73,7 +83,7 @@ void Chunk::buildMesh() {
                     addFace(v1, v2, v3, v4);
                 }
                 // top face
-                if (isAir({x, y + 1, z})) {
+                if (isAir({x, y + 1, z}, neighborChunks)) {
                     Vertex v1{{ 0.5f + fX,  0.5f + fY,  0.5f + fZ}, Face::Top, topTex};
                     Vertex v2{{ 0.5f + fX,  0.5f + fY, -0.5f + fZ}, Face::Top, topTex};
                     Vertex v3{{-0.5f + fX,  0.5f + fY, -0.5f + fZ}, Face::Top, topTex};
@@ -81,7 +91,7 @@ void Chunk::buildMesh() {
                     addFace(v1, v2, v3, v4);
                 }
                 // front face
-                if (isAir({x, y, z + 1})) {
+                if (isAir({x, y, z + 1}, neighborChunks)) {
                     Vertex v1{{-0.5f + fX, -0.5f + fY,  0.5f + fZ}, Face::Front, sideTex};
                     Vertex v2{{ 0.5f + fX, -0.5f + fY,  0.5f + fZ}, Face::Front, sideTex};
                     Vertex v3{{ 0.5f + fX,  0.5f + fY,  0.5f + fZ}, Face::Front, sideTex};
@@ -89,7 +99,7 @@ void Chunk::buildMesh() {
                     addFace(v1, v2, v3, v4);
                 }
                 // back face
-                if (isAir({x, y, z - 1})) {
+                if (isAir({x, y, z - 1}, neighborChunks)) {
                     Vertex v1{{-0.5f + fX, -0.5f + fY, -0.5f + fZ}, Face::Back, sideTex};
                     Vertex v2{{-0.5f + fX,  0.5f + fY, -0.5f + fZ}, Face::Back, sideTex};
                     Vertex v3{{ 0.5f + fX,  0.5f + fY, -0.5f + fZ}, Face::Back, sideTex};
@@ -110,12 +120,28 @@ void Chunk::draw(Shader& shader) const {
     }
 }
 
-bool Chunk::isAir(const glm::ivec3& localPos) const {
-    if (localPos.x < 0 || localPos.x >= Config::Chunk::size ||
-        localPos.y < 0 || localPos.y >= Config::Chunk::size ||
-        localPos.z < 0 || localPos.z >= Config::Chunk::size)
-    {
-        return true;
+bool Chunk::isAir(const glm::ivec3& localPos, const std::array<std::reference_wrapper<const Chunk>, 6>& neighborChunks) const {
+    static const auto airAt = [](const Chunk& chunk, const glm::ivec3& position) -> bool {
+        return chunk.m_blocks[position.x + position.y * Config::Chunk::size + position.z * Config::Chunk::area] == BlockType::Air;
+    };
+
+    if (localPos.x < 0) {
+        return airAt(neighborChunks[0].get(), {Config::Chunk::size - 1, localPos.y, localPos.z});
     }
-    return m_blocks[localPos.x + localPos.y * Config::Chunk::size + localPos.z * Config::Chunk::area] == BlockType::Air;
+    if (localPos.x >= Config::Chunk::size) {
+        return airAt(neighborChunks[1].get(), {0, localPos.y, localPos.z});
+    }
+    if (localPos.y < 0) {
+        return airAt(neighborChunks[2].get(), {localPos.x, Config::Chunk::size - 1, localPos.z});
+    }
+    if (localPos.y >= Config::Chunk::size) {
+        return airAt(neighborChunks[3].get(), {localPos.x, 0, localPos.z});
+    }
+    if (localPos.z < 0) {
+        return airAt(neighborChunks[5].get(), {localPos.x, localPos.y, Config::Chunk::size - 1});
+    }
+    if (localPos.z >= Config::Chunk::size) {
+        return airAt(neighborChunks[4].get(), {localPos.x, localPos.y, 0});
+    }
+    return airAt(*this, localPos);
 }

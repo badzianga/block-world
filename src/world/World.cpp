@@ -3,7 +3,10 @@
 #include "world/Generator.hpp"
 #include "world/World.hpp"
 
+World* World::p_currentWorld = nullptr;
+
 World::World() {
+    p_currentWorld = this;
     std::cout << "Starting world generation...\n";
     std::chrono::high_resolution_clock::time_point start = std::chrono::high_resolution_clock::now();
 
@@ -36,6 +39,10 @@ const Chunk& World::getChunk(glm::ivec3 chunkPos) {
         return makeChunk(chunkPos);
     }
     return *it->second;
+}
+
+World& World::getRef() {
+    return *p_currentWorld;
 }
 
 Chunk& World::makeChunk(glm::ivec3 chunkPos) {

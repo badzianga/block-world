@@ -17,7 +17,10 @@ public:
 
     void draw(Shader& shader) const;
     const Chunk& getChunk(glm::ivec3 chunkPos);
+    static World& getRef();
 private:
+    static World* p_currentWorld;
+
     Chunk& makeChunk(glm::ivec3 chunkPos);
 
     std::unordered_map<glm::ivec3, std::unique_ptr<Chunk>, ChunkCoordHash> m_chunks;

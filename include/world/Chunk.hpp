@@ -19,8 +19,9 @@ public:
     void buildMesh();
     void draw(Shader& shader) const;
 private:
-    [[nodiscard]] bool isAir(const glm::ivec3& localPos) const;
+    [[nodiscard]] bool isAir(const glm::ivec3& localPos, const std::array<std::reference_wrapper<const Chunk>, 6>& neighborChunks) const;
 
+    glm::ivec3 m_position;
     glm::mat4 m_model;
     std::array<BlockType, Config::Chunk::volume> m_blocks{};
     bool m_built = false;
