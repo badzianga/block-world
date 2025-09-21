@@ -52,7 +52,7 @@ Chunk Generator::generateTerrain(glm::ivec3 chunkPos) {
 
             BlockType type = BlockType::Air;
 
-            const auto worldHeight = static_cast<int>(glm::simplex(glm::vec2(worldX, worldZ) * 0.01f) * 32 + 64);
+            const int worldHeight = getPositionHeight(worldX, worldZ);
             const int localHeight = std::min(worldHeight - c.y, Config::Chunk::size);
 
             for (int y = 0; y < localHeight; ++y) {
@@ -74,4 +74,8 @@ Chunk Generator::generateTerrain(glm::ivec3 chunkPos) {
     }
 
     return Chunk(chunkPos, blocks);
+}
+
+int Generator::getPositionHeight(int x, int z) {
+    return static_cast<int>(glm::simplex(glm::vec2(x, z) * 0.01f) * 32 + 64);
 }

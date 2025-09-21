@@ -5,7 +5,13 @@
 #include "core/Input.hpp"
 #include "rendering/Camera.hpp"
 
-Camera::Camera(const std::shared_ptr<Input>& input) : p_input(input) {}
+#include "world/Generator.hpp"
+
+Camera::Camera(const std::shared_ptr<Input>& input) : p_input(input) {
+    m_position.y = static_cast<float>(
+        Generator::getPositionHeight(static_cast<int>(m_position.x), static_cast<int>(m_position.z)) + 2
+    );
+}
 
 void Camera::update(float deltaTime) {
     processKeyboard(deltaTime);
