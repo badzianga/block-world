@@ -4,12 +4,11 @@
 #include "core/Config.hpp"
 #include "core/Input.hpp"
 #include "rendering/Camera.hpp"
-
 #include "world/Generator.hpp"
 
 Camera::Camera(const std::shared_ptr<Input>& input) : p_input(input) {
-    m_position.y = static_cast<float>(
-        Generator::getPositionHeight(static_cast<int>(m_position.x), static_cast<int>(m_position.z)) + 2
+    position.y = static_cast<float>(
+        Generator::getPositionHeight(static_cast<int>(position.x), static_cast<int>(position.z)) + 2
     );
 }
 
@@ -18,17 +17,17 @@ void Camera::update(float deltaTime) {
     processMouse();
     updateCameraVectors();
 
-    ImGui::Text("XYZ: %f / %f / %f", m_position.x, m_position.y, m_position.z);
+    ImGui::Text("XYZ: %f / %f / %f", position.x, position.y, position.z);
     ImGui::Text("Block: %d / %d / %d",
-                static_cast<int>(m_position.x),
-                static_cast<int>(m_position.y),
-                static_cast<int>(m_position.z)
+                static_cast<int>(position.x),
+                static_cast<int>(position.y),
+                static_cast<int>(position.z)
     );
     ImGui::Text("Facing: %f / %f / %f", m_front.x, m_front.y, m_front.z);
 }
 
 glm::mat4 Camera::getViewMatrix() const {
-    return glm::lookAt(m_position, m_position + m_front, m_up);
+    return glm::lookAt(position, position + m_front, m_up);
 }
 
 glm::mat4 Camera::getProjectionMatrix() {
@@ -44,16 +43,16 @@ void Camera::processKeyboard(float deltaTime) {
     float velocity = Config::Gameplay::movementSpeed * deltaTime;
 
     if (p_input->isKeyDown(GLFW_KEY_W)) {
-        m_position += m_front * velocity;
+        position += m_front * velocity;
     }
     if (p_input->isKeyDown(GLFW_KEY_S)) {
-        m_position -= m_front * velocity;
+        position -= m_front * velocity;
     }
     if (p_input->isKeyDown(GLFW_KEY_A)) {
-        m_position -= m_right * velocity;
+        position -= m_right * velocity;
     }
     if (p_input->isKeyDown(GLFW_KEY_D)) {
-        m_position += m_right * velocity;
+        position += m_right * velocity;
     }
 }
 

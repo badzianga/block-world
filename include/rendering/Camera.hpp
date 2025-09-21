@@ -12,6 +12,8 @@ public:
 
     [[nodiscard]] glm::mat4 getViewMatrix() const;
     static glm::mat4 getProjectionMatrix();
+
+    glm::vec3 position{0.f};
 private:
     void processKeyboard(float deltaTime);
     void processMouse();
@@ -22,7 +24,6 @@ private:
     float m_yaw = -90.f;
     float m_pitch = 0.f;
 
-    glm::vec3 m_position{0.f};
     glm::vec3 m_front{0.f, 0.f, -1.f};
     glm::vec3 m_up{0.f, 1.f, 0.f};
     glm::vec3 m_right{1.f, 0.f, 0.f};
