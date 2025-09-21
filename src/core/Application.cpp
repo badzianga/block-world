@@ -79,7 +79,7 @@ void Application::run() {
     shader.use();
     texture.use();
 
-    glClearColor(0.1f, 0.15f, 0.2f, 1.f);
+    glClearColor(0.47f, 0.655f, 1.f, 1.f);
 
     glfwSetInputMode(p_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
