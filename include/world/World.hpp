@@ -16,7 +16,9 @@ public:
     World();
 
     void draw(Shader& shader) const;
-    const Chunk& getChunk(glm::ivec3 chunkPos);
+    Chunk& getChunk(glm::ivec3 chunkPos);
+    void generateChunksAroundPosition(const glm::vec3& position);
+
     static World& getRef();
 private:
     static World* p_currentWorld;
