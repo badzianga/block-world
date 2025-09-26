@@ -23,6 +23,11 @@ void Camera::update(float deltaTime) {
                 static_cast<int>(position.y),
                 static_cast<int>(position.z)
     );
+    ImGui::Text("Chunk: %d / %d / %d",
+                static_cast<int>(std::floor(position.x / Config::Chunk::size)),
+                static_cast<int>(std::floor(position.y / Config::Chunk::size)),
+                static_cast<int>(std::floor(position.z / Config::Chunk::size))
+    );
     ImGui::Text("Facing: %f / %f / %f", m_front.x, m_front.y, m_front.z);
 }
 
