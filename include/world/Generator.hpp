@@ -5,7 +5,12 @@ class Chunk;
 
 class Generator {
 public:
-    static Chunk generate(glm::ivec3 chunkPos);
-    static Chunk generateTerrain(glm::ivec3 chunkPos);
-    static int getPositionHeight(int x, int z);
+    virtual ~Generator() = default;
+
+    virtual Chunk generate(glm::ivec3 chunkPos) = 0;
+};
+
+class DefaultGenerator final : public Generator {
+    public:
+    Chunk generate(glm::ivec3 chunkPos) override;
 };

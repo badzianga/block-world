@@ -4,12 +4,9 @@
 #include "core/Config.hpp"
 #include "core/Input.hpp"
 #include "rendering/Camera.hpp"
-#include "world/Generator.hpp"
 
 Camera::Camera(const std::shared_ptr<Input>& input) : p_input(input) {
-    position.y = static_cast<float>(
-        Generator::getPositionHeight(static_cast<int>(position.x), static_cast<int>(position.z)) + 2
-    );
+    position.y = 64.f;
 }
 
 void Camera::update(float deltaTime) {

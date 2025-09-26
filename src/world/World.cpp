@@ -8,12 +8,13 @@ World* World::p_currentWorld = nullptr;
 World::World() {
     p_currentWorld = this;
     std::cout << "Starting world generation...\n";
+    p_generator = std::make_unique<DefaultGenerator>();
     std::chrono::high_resolution_clock::time_point start = std::chrono::high_resolution_clock::now();
 
     for (int z = -2; z < 2; ++z) {
         for (int y = 0; y < 6; ++y) {
             for (int x = -2; x < 2; ++x) {
-            auto chunk = std::make_unique<Chunk>(Generator::generateTerrain({x, y, z}));
+            auto chunk = std::make_unique<Chunk>(p_generator->generate({x, y, z}));
             if (!chunk->hasMesh()) {
                 chunk->buildMesh();
             }
@@ -65,7 +66,7 @@ World& World::getRef() {
 }
 
 Chunk& World::makeChunk(glm::ivec3 chunkPos) {
-    auto [it, inserted] = m_chunks.try_emplace(chunkPos, std::make_unique<Chunk>(Generator::generateTerrain(chunkPos)));
+    auto [it, inserted] = m_chunks.try_emplace(chunkPos, std::make_unique<Chunk>(p_generator->generate(chunkPos)));
     if (!inserted) {
         throw std::runtime_error("Chunk already exists, but shouldn't");
     }

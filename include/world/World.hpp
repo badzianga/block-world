@@ -2,6 +2,7 @@
 #include <unordered_map>
 #include <glm/vec3.hpp>
 #include "world/Chunk.hpp"
+#include "world/Generator.hpp"
 
 class Shader;
 
@@ -25,5 +26,6 @@ private:
 
     Chunk& makeChunk(glm::ivec3 chunkPos);
 
+    std::unique_ptr<Generator> p_generator;
     std::unordered_map<glm::ivec3, std::unique_ptr<Chunk>, ChunkCoordHash> m_chunks;
 };
