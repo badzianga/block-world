@@ -37,19 +37,21 @@ void World::draw(Shader& shader) const {
 Chunk& World::getChunk(glm::ivec3 chunkPos) {
     const auto it = m_chunks.find(chunkPos);
     if (it == m_chunks.end()) {
-        printf("Making new chunk on pos: {%d %d %d}\n", chunkPos.x, chunkPos.y, chunkPos.z);
+        // printf("Making new chunk on pos: {%d %d %d}\n", chunkPos.x, chunkPos.y, chunkPos.z);
         return makeChunk(chunkPos);
     }
     return *it->second;
 }
 
 void World::generateChunksAroundPosition(const glm::vec3& position) {
-    std::cout << "Generating new chunks...\n";
+    // std::cout << "Generating new chunks...\n";
     const glm::ivec3& chunkPos = static_cast<glm::ivec3>(position) / Config::Chunk::size;
 
-    for (int z = -4; z < 4; ++z) {
-        for (int y = -4; y < 4; ++y) {
-            for (int x = -4; x < 4; ++x) {
+    constexpr int radius = Config::Chunk::generationRadius;
+
+    for (int z = -radius; z < radius; ++z) {
+        for (int y = -radius; y < radius; ++y) {
+            for (int x = -radius; x < radius; ++x) {
                 const glm::ivec3 newChunkPos = chunkPos + glm::ivec3(x, y, z);
                 Chunk& chunk = getChunk(newChunkPos);
                 if (!chunk.hasMesh()) {
@@ -58,7 +60,7 @@ void World::generateChunksAroundPosition(const glm::vec3& position) {
             }
         }
     }
-    std::cout << "Now, there should be " << m_chunks.size() << " chunks\n";
+    // std::cout << "Now, there should be " << m_chunks.size() << " chunks\n";
 }
 
 World& World::getRef() {

@@ -23,5 +23,6 @@ namespace Config {
         constexpr int size = 16;
         constexpr int area = size * size;
         constexpr int volume = area * size;
+        constexpr int generationRadius = 4;
     }  // Rendering
 }  // Config

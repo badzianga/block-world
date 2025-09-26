@@ -84,8 +84,6 @@ void Application::run() {
 
     shader.set("u_projection", Camera::getProjectionMatrix());
 
-    float timeSinceLastChunkUpdate = 0.f;
-
     while (!glfwWindowShouldClose(p_window)) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -99,11 +97,7 @@ void Application::run() {
         p_camera->update(p_timer->getDeltaTime());
         p_input->update();
 
-        timeSinceLastChunkUpdate += p_timer->getDeltaTime();
-        if (timeSinceLastChunkUpdate > 5.f) {
-            world.generateChunksAroundPosition(p_camera->position);
-            timeSinceLastChunkUpdate = 0.f;
-        }
+        world.generateChunksAroundPosition(p_camera->position);
 
         shader.set("u_view", p_camera->getViewMatrix());
 
