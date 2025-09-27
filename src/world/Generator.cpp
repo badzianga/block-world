@@ -5,7 +5,6 @@
 
 Chunk DefaultGenerator::generate(glm::ivec3 chunkPos) {
     std::array<BlockType, Config::Chunk::volume> blocks{};
-
     const glm::ivec3 c = chunkPos * Config::Chunk::size;
 
     for (int z = 0; z < Config::Chunk::size; ++z) {
@@ -42,4 +41,24 @@ Chunk DefaultGenerator::generate(glm::ivec3 chunkPos) {
 
 int DefaultGenerator::getHeight(int x, int z) {
     return static_cast<int>(glm::simplex(glm::vec2(x, z) * 0.01f) * 32.f + 64.f);
+}
+
+Chunk SuperFlatGenerator::generate(glm::ivec3 chunkPos) {
+    std::array<BlockType, Config::Chunk::volume> blocks{};
+    if (chunkPos.y != 0) {
+        return Chunk(chunkPos, blocks);
+    }
+
+    for (int z = 0; z < Config::Chunk::size; ++z) {
+        for (int x = 0; x < Config::Chunk::size; ++x) {
+            blocks[z * Config::Chunk::area + x] = BlockType::Grass;
+        }
+    }
+
+    return Chunk(chunkPos, blocks);
+}
+
+int SuperFlatGenerator::getHeight(int x, int z) {
+    (void)x, (void)z;
+    return 0;
 }

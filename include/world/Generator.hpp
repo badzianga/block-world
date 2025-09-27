@@ -12,7 +12,13 @@ public:
 };
 
 class DefaultGenerator final : public Generator {
-    public:
+public:
+    Chunk generate(glm::ivec3 chunkPos) override;
+    int getHeight(int x, int z) override;
+};
+
+class SuperFlatGenerator final : public Generator {
+public:
     Chunk generate(glm::ivec3 chunkPos) override;
     int getHeight(int x, int z) override;
 };
