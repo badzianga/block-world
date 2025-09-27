@@ -63,6 +63,10 @@ void World::generateChunksAroundPosition(const glm::vec3& position) {
     // std::cout << "Now, there should be " << m_chunks.size() << " chunks\n";
 }
 
+float World::getPositionHeight(float x, float z) const {
+    return static_cast<float>(p_generator->getHeight(static_cast<int>(x), static_cast<int>(z)));
+}
+
 World& World::getRef() {
     return *p_currentWorld;
 }

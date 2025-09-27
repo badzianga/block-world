@@ -5,9 +5,7 @@
 #include "core/Input.hpp"
 #include "rendering/Camera.hpp"
 
-Camera::Camera(const std::shared_ptr<Input>& input) : p_input(input) {
-    position.y = 64.f;
-}
+Camera::Camera(const std::shared_ptr<Input>& input) : p_input(input) {}
 
 void Camera::update(float deltaTime) {
     processKeyboard(deltaTime);

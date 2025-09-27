@@ -84,6 +84,8 @@ void Application::run() {
 
     shader.set("u_projection", Camera::getProjectionMatrix());
 
+    p_camera->position.y = world.getPositionHeight(p_camera->position.x, p_camera->position.z) + 2.f;
+
     while (!glfwWindowShouldClose(p_window)) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 

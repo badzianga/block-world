@@ -16,7 +16,7 @@ Chunk DefaultGenerator::generate(glm::ivec3 chunkPos) {
 
             BlockType type = BlockType::Air;
 
-            const int worldHeight = static_cast<int>(glm::simplex(glm::vec2(worldX, worldZ) * 0.01f) * 32.f + 64.f);
+            const int worldHeight = getHeight(worldX, worldZ);
             const int localHeight = std::min(worldHeight - c.y, Config::Chunk::size);
 
             for (int y = 0; y < localHeight; ++y) {
@@ -38,4 +38,8 @@ Chunk DefaultGenerator::generate(glm::ivec3 chunkPos) {
     }
 
     return Chunk(chunkPos, blocks);
+}
+
+int DefaultGenerator::getHeight(int x, int z) {
+    return static_cast<int>(glm::simplex(glm::vec2(x, z) * 0.01f) * 32.f + 64.f);
 }
