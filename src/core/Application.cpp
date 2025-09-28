@@ -54,9 +54,9 @@ Application::Application() {
               << "Using Device: " << reinterpret_cast<const char*>(glGetString(GL_VENDOR))
               << " - " << reinterpret_cast<const char*>(glGetString(GL_RENDERER)) << "\n";
 
-    p_input = std::make_shared<Input>(p_window);
+    p_input = std::make_unique<Input>(p_window);
     p_timer = std::make_unique<Timer>();
-    p_camera = std::make_unique<Camera>(p_input);
+    p_camera = std::make_unique<Camera>(*p_input);
 
     ImGuiDebug::init(p_window);
 }

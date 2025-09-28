@@ -5,7 +5,7 @@
 #include "core/Input.hpp"
 #include "rendering/Camera.hpp"
 
-Camera::Camera(const std::shared_ptr<Input>& input) : p_input(input) {}
+Camera::Camera(const Input& input) : m_input(input) {}
 
 void Camera::update(float deltaTime) {
     processKeyboard(deltaTime);
@@ -48,28 +48,28 @@ void Camera::processKeyboard(float deltaTime) {
 
     glm::vec3 right = glm::normalize(glm::cross(flatFront, {0.f, 1.f, 0.f}));
 
-    if (p_input->isKeyDown(GLFW_KEY_W)) {
+    if (m_input.isKeyDown(GLFW_KEY_W)) {
         position += flatFront * velocity;
     }
-    if (p_input->isKeyDown(GLFW_KEY_S)) {
+    if (m_input.isKeyDown(GLFW_KEY_S)) {
         position -= flatFront * velocity;
     }
-    if (p_input->isKeyDown(GLFW_KEY_A)) {
+    if (m_input.isKeyDown(GLFW_KEY_A)) {
         position -= right * velocity;
     }
-    if (p_input->isKeyDown(GLFW_KEY_D)) {
+    if (m_input.isKeyDown(GLFW_KEY_D)) {
         position += right * velocity;
     }
-    if (p_input->isKeyDown(GLFW_KEY_SPACE)) {
+    if (m_input.isKeyDown(GLFW_KEY_SPACE)) {
         position.y += velocity;
     }
-    if (p_input->isKeyDown(GLFW_KEY_LEFT_SHIFT)) {
+    if (m_input.isKeyDown(GLFW_KEY_LEFT_SHIFT)) {
         position.y -= velocity;
     }
 }
 
 void Camera::processMouse() {
-    glm::vec2 offset = p_input->getMouseDelta() * Config::Gameplay::mouseSensitivity;
+    glm::vec2 offset = m_input.getMouseDelta() * Config::Gameplay::mouseSensitivity;
 
     m_yaw += offset.x;
     m_pitch -= offset.y;
