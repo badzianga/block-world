@@ -25,6 +25,4 @@ private:
     float m_pitch = 0.f;
 
     glm::vec3 m_front{0.f, 0.f, -1.f};
-    glm::vec3 m_up{0.f, 1.f, 0.f};
-    glm::vec3 m_right{1.f, 0.f, 0.f};
 };

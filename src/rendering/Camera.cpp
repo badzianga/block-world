@@ -27,7 +27,7 @@ void Camera::update(float deltaTime) {
 }
 
 glm::mat4 Camera::getViewMatrix() const {
-    return glm::lookAt(position, position + m_front, m_up);
+    return glm::lookAt(position, position + m_front, {0.f, 1.f, 0.f});
 }
 
 glm::mat4 Camera::getProjectionMatrix() {
@@ -42,17 +42,29 @@ glm::mat4 Camera::getProjectionMatrix() {
 void Camera::processKeyboard(float deltaTime) {
     float velocity = Config::Gameplay::movementSpeed * deltaTime;
 
+    glm::vec3 flatFront = m_front;
+    flatFront.y = 0.f;
+    flatFront = glm::normalize(flatFront);
+
+    glm::vec3 right = glm::normalize(glm::cross(flatFront, {0.f, 1.f, 0.f}));
+
     if (p_input->isKeyDown(GLFW_KEY_W)) {
-        position += m_front * velocity;
+        position += flatFront * velocity;
     }
     if (p_input->isKeyDown(GLFW_KEY_S)) {
-        position -= m_front * velocity;
+        position -= flatFront * velocity;
     }
     if (p_input->isKeyDown(GLFW_KEY_A)) {
-        position -= m_right * velocity;
+        position -= right * velocity;
     }
     if (p_input->isKeyDown(GLFW_KEY_D)) {
-        position += m_right * velocity;
+        position += right * velocity;
+    }
+    if (p_input->isKeyDown(GLFW_KEY_SPACE)) {
+        position.y += velocity;
+    }
+    if (p_input->isKeyDown(GLFW_KEY_LEFT_SHIFT)) {
+        position.y -= velocity;
     }
 }
 
@@ -72,6 +84,4 @@ void Camera::updateCameraVectors() {
         std::sin(glm::radians(m_yaw)) * std::cos(glm::radians(m_pitch))
     };
     m_front = glm::normalize(front);
-    m_right = glm::normalize(glm::cross(m_front, {0.f, 1.f, 0.f}));
-    m_up = glm::normalize(glm::cross(m_right, m_front));
 }
