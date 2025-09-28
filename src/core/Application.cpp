@@ -72,7 +72,7 @@ void Application::run() {
     p_timer->init();
 
     World world;
-    Shader shader{"../res/shaders/cube.vert", "../res/shaders/cube.frag"};
+    Shader shader{"../res/shaders/chunk.vert", "../res/shaders/chunk.frag"};
     Texture texture{"../res/textures/terrain.png"};
 
     shader.use();
