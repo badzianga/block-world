@@ -1,5 +1,6 @@
 #include <chrono>
 #include <iostream>
+#include <imgui.h>
 #include "world/Generator.hpp"
 #include "world/World.hpp"
 
@@ -32,6 +33,9 @@ void World::draw(Shader& shader) const {
     for (auto& chunk : m_chunks) {
         chunk.second->draw(shader);
     }
+
+    ImGui::Separator();
+    ImGui::Text("Chunks amount: %zu", m_chunks.size());
 }
 
 Chunk& World::getChunk(glm::ivec3 chunkPos) {
