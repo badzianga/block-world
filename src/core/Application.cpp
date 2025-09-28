@@ -99,8 +99,6 @@ void Application::run() {
         p_camera->update(p_timer->getDeltaTime());
         p_input->update();
 
-        world.generateChunksAroundPosition(p_camera->position);
-
         shader.set("u_view", p_camera->getViewMatrix());
 
         world.draw(shader);

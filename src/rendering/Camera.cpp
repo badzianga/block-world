@@ -4,6 +4,7 @@
 #include "core/Config.hpp"
 #include "core/Input.hpp"
 #include "rendering/Camera.hpp"
+#include "world/World.hpp"
 
 Camera::Camera(const Input& input) : m_input(input) {}
 
@@ -48,6 +49,8 @@ void Camera::processKeyboard(float deltaTime) {
 
     glm::vec3 right = glm::normalize(glm::cross(flatFront, {0.f, 1.f, 0.f}));
 
+    const glm::ivec3 previousChunkPos = static_cast<glm::ivec3>(position) / Config::Chunk::size;
+
     if (m_input.isKeyDown(GLFW_KEY_W)) {
         position += flatFront * velocity;
     }
@@ -65,6 +68,12 @@ void Camera::processKeyboard(float deltaTime) {
     }
     if (m_input.isKeyDown(GLFW_KEY_LEFT_SHIFT)) {
         position.y -= velocity;
+    }
+
+    const glm::ivec3 currentChunkPos = static_cast<glm::ivec3>(position) / Config::Chunk::size;
+
+    if (previousChunkPos != currentChunkPos) {
+        World::getRef().generateChunksAroundPosition(currentChunkPos);
     }
 }
 

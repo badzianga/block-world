@@ -43,10 +43,8 @@ Chunk& World::getChunk(glm::ivec3 chunkPos) {
     return *it->second;
 }
 
-void World::generateChunksAroundPosition(const glm::vec3& position) {
+void World::generateChunksAroundPosition(const glm::ivec3& chunkPos) {
     // std::cout << "Generating new chunks...\n";
-    const glm::ivec3& chunkPos = static_cast<glm::ivec3>(position) / Config::Chunk::size;
-
     constexpr int radius = Config::Chunk::generationRadius;
 
     for (int z = -radius; z < radius; ++z) {
