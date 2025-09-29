@@ -29,4 +29,5 @@ private:
 
     std::unique_ptr<Generator> p_generator;
     std::unordered_map<glm::ivec3, std::unique_ptr<Chunk>, ChunkCoordHash> m_chunks;
+    std::unique_ptr<Chunk> p_emptyChunk;
 };

@@ -12,14 +12,16 @@ World::World() {
     p_generator = std::make_unique<DefaultGenerator>();
     std::chrono::high_resolution_clock::time_point start = std::chrono::high_resolution_clock::now();
 
+    p_emptyChunk = std::make_unique<Chunk>(Generator::makeEmptyChunk());
+
     for (int z = -2; z < 2; ++z) {
         for (int y = 0; y < 6; ++y) {
             for (int x = -2; x < 2; ++x) {
-            auto chunk = std::make_unique<Chunk>(p_generator->generate({x, y, z}));
-            if (!chunk->hasMesh()) {
-                chunk->buildMesh();
+            auto chunkPtr = std::make_unique<Chunk>(p_generator->generate({x, y, z}));
+            if (!chunkPtr->hasMesh()) {
+                chunkPtr->buildMesh();
             }
-            m_chunks[{x, y, z}] = std::move(chunk);
+            m_chunks[{x, y, z}] = std::move(chunkPtr);
             }
         }
     }
@@ -30,7 +32,7 @@ World::World() {
 }
 
 void World::draw(Shader& shader) const {
-    for (auto& chunk : m_chunks) {
+    for (const auto& chunk : m_chunks) {
         chunk.second->draw(shader);
     }
 
@@ -39,6 +41,7 @@ void World::draw(Shader& shader) const {
 }
 
 Chunk& World::getChunk(glm::ivec3 chunkPos) {
+    if (chunkPos.y < 0) return *p_emptyChunk;
     const auto it = m_chunks.find(chunkPos);
     if (it == m_chunks.end()) {
         // printf("Making new chunk on pos: {%d %d %d}\n", chunkPos.x, chunkPos.y, chunkPos.z);
@@ -55,6 +58,7 @@ void World::generateChunksAroundPosition(const glm::ivec3& chunkPos) {
         for (int y = -radius; y < radius; ++y) {
             for (int x = -radius; x < radius; ++x) {
                 const glm::ivec3 newChunkPos = chunkPos + glm::ivec3(x, y, z);
+                if (newChunkPos.y < 0) continue;
                 Chunk& chunk = getChunk(newChunkPos);
                 if (!chunk.hasMesh()) {
                     chunk.buildMesh();

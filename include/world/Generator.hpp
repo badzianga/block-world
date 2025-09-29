@@ -9,6 +9,8 @@ public:
 
     virtual Chunk generate(glm::ivec3 chunkPos) = 0;
     virtual int getHeight(int x, int z) = 0;
+
+    static Chunk makeEmptyChunk();
 };
 
 class DefaultGenerator final : public Generator {

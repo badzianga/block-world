@@ -3,6 +3,11 @@
 #include "world/Chunk.hpp"
 #include "world/Generator.hpp"
 
+Chunk Generator::makeEmptyChunk() {
+    std::array<BlockType, Config::Chunk::volume> blocks{};
+    return Chunk({0, -1, 0}, blocks);
+}
+
 Chunk DefaultGenerator::generate(glm::ivec3 chunkPos) {
     std::array<BlockType, Config::Chunk::volume> blocks{};
     const glm::ivec3 c = chunkPos * Config::Chunk::size;
